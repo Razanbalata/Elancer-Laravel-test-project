@@ -1,3 +1,5 @@
-<div>
-    <!-- Do what you can, with what you have, where you are. - Theodore Roosevelt -->
-</div>
+@include('dashboard.posts.create',[
+    'post' => $post,
+    $action = route('dashboard.posts.update', $post->id),
+    $method = 'PUT',
+]);

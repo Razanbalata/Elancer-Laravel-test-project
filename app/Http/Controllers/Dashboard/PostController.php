@@ -12,11 +12,24 @@ class PostController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $posts = Post::all();
+        $status = $request->query('status', 'published');
+        $status_options =  array_map(function ($value) {
+            return [
+                'name' => ucfirst($value),
+                'count' => Post::query()->where("status", $value)->count()
+            ];
+        }, [
+            'published' => 'Published',
+            'draft' => 'Draft',
+            'archived' => 'Archived'
+        ]);
+        $posts = Post::query()->where("status", $status)->latest()->get();
         return view('dashboard.posts.index', [
             'posts' => $posts,
+            'status_options' => $status_options,
+            'status' => $status,
         ]);
     }
 
@@ -25,7 +38,9 @@ class PostController extends Controller
      */
     public function create()
     {
-        return view('dashboard.posts.create');
+        return view('dashboard.posts.create', [
+            'post' => new Post(),
+        ]);
     }
 
     /**
@@ -36,13 +51,14 @@ class PostController extends Controller
         //    dd('store hit');
 
         $request->merge([
-            'user_id'=>1,
-            'slug'=>Str::slug($request->post('title'))
-        ]) ;
+            'user_id' => 1,
+            'slug' => Str::slug($request->post('title')),
+            'status' => "published",
+        ]);
         Post::create($request->all());
-       
+
         #PRG => Post Redirect Get
-        return redirect()->to('/dashboard/posts');
+        return redirect()->route("dashboard.posts.index");
 
         // $post = Post::create([
         //     'title'=>$request['title'],
@@ -70,7 +86,6 @@ class PostController extends Controller
         return view('dashboard.posts.show', [
             'post' => $post,
         ]);
-
     }
 
     /**
@@ -79,7 +94,7 @@ class PostController extends Controller
     public function edit(string $id)
     {
         $post = Post::findOrFail($id);
-        return view('dashboard.posts.show', [
+        return view('dashboard.posts.edit', [
             'post' => $post,
         ]);
     }
@@ -92,7 +107,7 @@ class PostController extends Controller
         $post = Post::findOrFail($id);
         $post->update($request->all());
 
-        return redirect()->to("/dashboard/posts");
+        return redirect()->route("dashboard.posts.index");
     }
 
     /**
@@ -101,6 +116,6 @@ class PostController extends Controller
     public function destroy(string $id)
     {
         Post::destroy($id);
-        return redirect()->to('/dashboard/posts');
+        return redirect()->route("dashboard.posts.index");
     }
 }

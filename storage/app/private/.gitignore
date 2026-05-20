@@ -1,2 +1,4 @@
-*
-!.gitignore
+* # Ignore all files in the storage/app/private directory
+!.gitignore # Allow the .gitignore file itself to be tracked
+
+

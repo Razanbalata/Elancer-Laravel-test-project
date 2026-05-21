@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -38,8 +39,10 @@ class PostController extends Controller
      */
     public function create()
     {
+        $categories = Category::all();
         return view('dashboard.posts.create', [
             'post' => new Post(),
+            'categories' => $categories,
         ]);
     }
 

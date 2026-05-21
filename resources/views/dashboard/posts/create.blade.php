@@ -79,24 +79,16 @@
                         </div>
                         <input type='file' name='cover' accept="image/*" />
                     </section>
-                    <!-- Tags -->
-                    <section>
-                        <h3 class="font-ui-label text-ui-label text-on-surface mb-4 uppercase tracking-wider">Tags</h3>
-                        <div class="flex flex-wrap gap-2 mb-3">
-                            <span
-                                class="bg-primary-fixed text-on-primary-fixed px-3 py-1 rounded-full font-metadata text-metadata flex items-center gap-1">
-                                Minimalism <span
-                                    class="material-symbols-outlined text-[14px] cursor-pointer">close</span>
-                            </span>
-                            <span
-                                class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full font-metadata text-metadata flex items-center gap-1">
-                                Writing <span class="material-symbols-outlined text-[14px] cursor-pointer">close</span>
-                            </span>
-                        </div>
-                        <input
-                            class="w-full bg-white border border-outline-variant rounded-lg px-4 py-2 font-metadata text-metadata focus:ring-1 focus:ring-primary focus:border-primary transition-all"
-                            placeholder="Add tag..." type="text" />
-                    </section>
+                    <!-- Categories -->
+                    <select name="category_id">
+                        <option value="">Select Category</option>
+
+                        @foreach ($categories as $category)
+                            <option value="{{ $category->id }}">
+                                {{ $category->name }}
+                            </option>
+                        @endforeach
+                    </select>
                     <!-- SEO Preview -->
                     <section>
                         <div class="flex justify-between items-center mb-4">

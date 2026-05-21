@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Dashboard\PostController as DashboardPostController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Dashboard\CategoryController as DashboardCategoryController;
 use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
@@ -47,4 +48,11 @@ Route::group([
     'prefix'=>'dashboard/'
 ], function () {
     Route::resource('posts', DashboardPostController::class);
+});
+
+Route::group([
+    'as'=>'dashboard.',
+    'prefix'=>'dashboard/'
+], function () {
+    Route::resource('categories', DashboardCategoryController::class);
 });

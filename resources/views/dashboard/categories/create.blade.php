@@ -52,7 +52,7 @@
             <!-- Button -->
             <button type="submit"
                     class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-lg transition">
-                Save Category
+                Save Categphory
             </button>
 
         </form>

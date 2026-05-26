@@ -3,6 +3,11 @@
 
     <main class="flex-grow w-full max-w-container-max mx-auto px-gutter py-12">
         <!-- Header Section -->
+        @if (session()->has('status'))
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6" role="alert">
+                <span class="block sm:inline">{{ session('status') }}</span>
+            </div>
+        @endif
         <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
             <div>
                 <h1 class="font-display-lg text-display-lg text-on-background mb-2">Content Management</h1>

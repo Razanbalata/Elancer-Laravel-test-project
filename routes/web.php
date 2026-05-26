@@ -52,7 +52,8 @@ Route::group([
 
 Route::group([
     'as'=>'dashboard.',
-    'prefix'=>'dashboard/'
+    'prefix'=>'dashboard/',
+    'middleware'=>'auth'
 ], function () {
     Route::resource('categories', DashboardCategoryController::class);
 });

@@ -1,20 +1,32 @@
 <x-layout title="Create Post" mainClass="pb-section-gap px-gutter
     gap-8">
 
-    <main class="pt-24 pb-32 flex flex-col md:flex-row max-w-container-max mx-auto px-gutter gap-12">
-        <form action="{{ $action ?? route('dashboard.posts.store') }}" method="POST" enctype="multipart/form-data"
-            class="flex-1 flex flex-col lg:flex-row gap-12">
-            @csrf
-            @if (($method ?? 'POST') !== 'POST')
-                @method($method)
-            @endif
+
+    <form action="{{ $action ?? route('dashboard.posts.store') }}" method="POST" enctype="multipart/form-data"
+        class="flex-1 flex flex-col lg:flex-row gap-12">
+        @csrf
+        @if (($method ?? 'POST') !== 'POST')
+            @method($method)
+        @endif
+
+        <main class="pt-24 pb-32 flex flex-col md:flex-row max-w-container-max mx-auto px-gutter gap-12">
             <!-- Editor Canvas -->
             <div class="flex-1 max-w-article-max mx-auto w-full distraction-free-focus">
                 <div class="editor-container">
+                    @if ($errors->any())
+                        <div class='bg-red-100 text-red-700 p-4 mb-4'>
+                            @foreach ($errors->all() as $error)
+                                <p>{{ $error }}</p>
+                            @endforeach
+                        </div>
+                    @endif
                     <!-- Title Field -->
-                    <input value="{{ $post->title }}" type="text" name="title"
+                    <input value="{{ old('title',$post->title) }}" type="text" name="title"
                         class="w-full bg-transparent border-none focus:ring-0 font-display-lg text-display-lg resize-none placeholder:text-surface-variant text-on-surface mb-8 overflow-hidden"
                         placeholder="Enter your title..." />
+                    @error('title')
+                        <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                    @enderror
                     <!-- Floating Toolbar (Contextual) -->
                     {{-- <div class="sticky top-20 z-40 flex justify-center mb-12">
                     <div
@@ -58,8 +70,11 @@
                     <textarea name="content"
                         class="w-full bg-transparent border-none focus:outline-none font-body-lg text-body-lg text-on-surface leading-relaxed placeholder:text-surface-variant"
                         data-placeholder="Try our story" oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"'>
-                   {{ $post->content }}
+                   {{ old('content', $post->content) }}
                 </textarea>
+                    @error('content')
+                        <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
                 <button type="submit" class="bg-green-600">Publish</button>
             </div>
@@ -71,13 +86,26 @@
                     <section>
                         <h3 class="font-ui-label text-ui-label text-on-surface mb-4 uppercase tracking-wider">Cover
                             Image</h3>
-                        <div
-                            class="aspect-video w-full rounded-lg bg-surface-container border-2 border-dashed border-outline-variant flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-surface-container-high transition-colors group">
-                            <span
-                                class="material-symbols-outlined text-secondary group-hover:text-primary transition-colors">add_a_photo</span>
-                            <span class="font-metadata text-metadata text-secondary">Upload high-res photo</span>
-                        </div>
+                        @if ($post->cover_image)
+                            <div class='aspect-video w-full bg-cover'
+                                style="background-image:url('{{ asset('storage/' . $post->cover_image) }}')">
+
+                            </div>
+                        @else
+                            <div
+                                class="aspect-video w-full rounded-lg bg-surface-container border-2 border-dashed border-outline-variant flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-surface-container-high transition-colors group">
+                                <span
+                                    class="material-symbols-outlined text-secondary group-hover:text-primary transition-colors">add_a_photo</span>
+                                <span class="font-metadata text-metadata text-secondary">Upload high-res photo</span>
+                            </div>
+                        @endif
                         <input type='file' name='cover' accept="image/*" />
+                        @error('cover')
+                            @foreach ($errors->get() as $message)
+                                <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                            @endforeach
+                        @enderror
+
                     </section>
                     <!-- Categories -->
                     <select name="category_id">
@@ -122,7 +150,8 @@
                     </section>
                 </div>
             </aside>
-        </form>
-    </main>
+        </main>
+    </form>
+
 
 </x-layout>

@@ -21,7 +21,7 @@
                         </div>
                     @endif
                     <!-- Title Field -->
-                    <input value="{{ old('title',$post->title) }}" type="text" name="title"
+                    <input value="{{ old('title', $post->title) }}" type="text" name="title"
                         class="w-full bg-transparent border-none focus:ring-0 font-display-lg text-display-lg resize-none placeholder:text-surface-variant text-on-surface mb-8 overflow-hidden"
                         placeholder="Enter your title..." />
                     @error('title')
@@ -116,7 +116,23 @@
                                 {{ $category->name }}
                             </option>
                         @endforeach
+                       
                     </select>
+                    <!-- Tags -->
+                    <section>
+                        <h3 class="font-ui-label text-ui-label text-on-surface mb-4 uppercase tracking-wider">Tags</h3>
+                        <div class="flex flex-wrap gap-2">
+                            @foreach ($post->tags as $tag)
+                                <span class="px-3 py-1 bg-surface-container rounded-full text-sm text-on-surface">
+                                    {{ $tag->name }}
+                                </span>
+                            @endforeach
+                        </div>
+                         <input
+                         value="{{ old("tags") }}"
+                          type="text" name="tags"  placeholder="Add new category..."
+                            class='w-full rounded-xl bg-white border border-outline-variant focus:ring-primary focus:outline-none' />
+                    </section>
                     <!-- SEO Preview -->
                     <section>
                         <div class="flex justify-between items-center mb-4">

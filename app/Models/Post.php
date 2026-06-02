@@ -40,4 +40,9 @@ class Post extends Model
     public function comments():HasMany{
         return $this->hasMany(Comment::class,'post_id','id');
     }
+
+    public function tags(){
+        return $this->belongsToMany(Tag::class,'post-tag','post_id','tag_id');
+
     }
+}

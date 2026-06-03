@@ -31,6 +31,10 @@ class PostRequest extends FormRequest
                 'max:99999',
                 new Restricted(['god','admin'])
             ],
+            'category_id' => [
+            'nullable',
+            'exists:categories,id'
+        ],
             'cover' => [
                 'nullable',
                 'image',

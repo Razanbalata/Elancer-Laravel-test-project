@@ -135,6 +135,7 @@
         }
     </script>
      {{ $style ?? '' }}
+     {{ $headScripts ?? '' }}
 </head>
 
 <body class="font-body-md text-body-md selection:bg-primary-fixed selection:text-on-primary-fixed">

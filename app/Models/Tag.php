@@ -2,20 +2,21 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 
 class Tag extends Model
 {
-  
-     protected $fillable = [
+
+    protected $fillable = [
         'name',
         'slug',
-     ];
-     public $timestamps = false;
-  
-    public function posts(){
-        return $this->belongsToMany(Post::class,'post-tag','tag_id','post_id');
+    ];
+    public $timestamps = false;
 
+    public function posts()
+    {
+        return $this->belongsToMany(Post::class, 'post-tag', 'tag_id', 'post_id');
     }
-
+   
 }

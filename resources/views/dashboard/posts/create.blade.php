@@ -1,7 +1,9 @@
 <x-layout title="Create Post" mainClass="pb-section-gap px-gutter
     gap-8">
-
-
+    <x-slot:head-scripts>
+        <script src="https://cdn.tiny.cloud/1/t86t6sht82g1dun4bumz83x5roc04rtjo43qbkgbtl0walzz/tinymce/8/tinymce.min.js"
+            referrerpolicy="origin" crossorigin="anonymous"></script>
+    </x-slot:head-scripts>
     <form action="{{ $action ?? route('dashboard.posts.store') }}" method="POST" enctype="multipart/form-data"
         class="flex-1 flex flex-col lg:flex-row gap-12">
         @csrf
@@ -67,7 +69,7 @@
                         leaving only the words. We prioritize clarity above all else, ensuring that every sentence
                         has room to breathe and every idea has the weight it deserves.</p>
                 </div> --}}
-                    <textarea name="content"
+                    <textarea id='content' name="content"
                         class="w-full bg-transparent border-none focus:outline-none font-body-lg text-body-lg text-on-surface leading-relaxed placeholder:text-surface-variant"
                         data-placeholder="Try our story" oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"'>
                    {{ old('content', $post->content) }}
@@ -116,7 +118,7 @@
                                 {{ $category->name }}
                             </option>
                         @endforeach
-                       
+
                     </select>
                     <!-- Tags -->
                     <section>
@@ -128,9 +130,8 @@
                                 </span>
                             @endforeach
                         </div>
-                         <input
-                         value="{{ old("tags") }}"
-                          type="text" name="tags"  placeholder="Add new category..."
+                        <input value="{{ old('tags') }}" type="text" name="tags"
+                            placeholder="Add new category..."
                             class='w-full rounded-xl bg-white border border-outline-variant focus:ring-primary focus:outline-none' />
                     </section>
                     <!-- SEO Preview -->
@@ -171,3 +172,47 @@
 
 
 </x-layout>
+
+<script>
+    tinymce.init({
+        selector: '#content',
+        plugins: [
+            // Core editing features
+            'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'link', 'lists', 'media',
+            'searchreplace', 'table', 'visualblocks', 'wordcount',
+            // Your account includes a free trial of TinyMCE premium features
+            // Try the most popular premium features until Jun 16, 2026:
+            'checklist', 'mediaembed', 'casechange', 'formatpainter', 'pageembed', 'a11ychecker',
+            'tinymcespellchecker', 'permanentpen', 'powerpaste', 'advtable', 'advcode', 'advtemplate',
+            'tinymceai', 'uploadcare', 'mentions', 'tinycomments', 'tableofcontents', 'footnotes',
+            'mergetags', 'autocorrect', 'typography', 'inlinecss', 'markdown', 'importword', 'exportword',
+            'exportpdf'
+        ],
+        toolbar: 'undo redo | tinymceai-chat tinymceai-quickactions tinymceai-review | blocks fontfamily fontsize | bold italic underline strikethrough | link media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography uploadcare | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+        tinycomments_mode: 'embedded',
+        tinycomments_author: 'Author name',
+        mergetags_list: [{
+                value: 'First.Name',
+                title: 'First Name'
+            },
+            {
+                value: 'Email',
+                title: 'Email'
+            },
+        ],
+        tinymceai_token_provider: async () => {
+            await fetch(
+                `https://demo.api.tiny.cloud/1/t86t6sht82g1dun4bumz83x5roc04rtjo43qbkgbtl0walzz/auth/random`, {
+                    method: "POST",
+                    credentials: "include"
+                });
+            return {
+                token: await fetch(
+                    `https://demo.api.tiny.cloud/1/t86t6sht82g1dun4bumz83x5roc04rtjo43qbkgbtl0walzz/jwt/tinymceai`, {
+                        credentials: "include"
+                    }).then(r => r.text())
+            };
+        },
+        uploadcare_public_key: 'cb0ef7d2cbbe287d8f70',
+    });
+</script>

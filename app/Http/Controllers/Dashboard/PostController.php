@@ -201,6 +201,8 @@ class PostController extends Controller
 
             'cover_image' => $fileUpload->handle(key: 'cover', path: 'covers'),
         ]);
+ 
+
          DB::transaction(function () use ($post, $data, $syncPostTags, $clean) {
                 $post->update($data);
                 $syncPostTags->handle($post, $clean['tags'] ?? '');

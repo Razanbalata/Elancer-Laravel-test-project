@@ -49,7 +49,7 @@ Route::group([
 ], function () {
     Route::resource('posts', DashboardPostController::class);
 });
-
+Route::get('/posts/{slug}', [PostController::class, 'show'])->name('posts.show');
 Route::group([
     'as'=>'dashboard.',
     'prefix'=>'dashboard/',

@@ -29,12 +29,12 @@ class PostRequest extends FormRequest
                 'required',
                 'string',
                 'max:99999',
-                new Restricted(['god','admin'])
+                new Restricted(['god', 'admin'])
             ],
             'category_id' => [
-            'nullable',
-            'exists:categories,id'
-        ],
+                'nullable',
+                'exists:categories,id'
+            ],
             'cover' => [
                 'nullable',
                 'image',
@@ -43,6 +43,11 @@ class PostRequest extends FormRequest
                 'max:1024'
             ],
             'tags' => ['nullable', 'string', 'max:255'],
+            'published_at' => ['nullable', 'date'],
+            'meta'=>['nullable','array'],
+             'meta.description'=>['nullable','string','max:255'],
+                'meta.keywords'=>['nullable','string','max:255'],
+                'meta.title'=>['nullable','string','max:255'],
         ];
     }
 

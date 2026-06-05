@@ -78,6 +78,38 @@
                         <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                     @enderror
                 </div>
+
+                <section>
+                    <h3 class="font-ui-label text-ui-label text-on-surface mb-4 uppercase tracking-wider">Cover
+                        Metadata
+                        <div>
+                            <div>
+                                <label for='' class='flex flex-col gap-4 mb-6'> title </label>
+                                <input type='text' name='meta[title]'
+                                    value='{{ old('meta.title', $post->meta['title'] ?? '') }}' />
+                            </div>
+                            <div>
+                                <label for='' class='flex flex-col gap-4 mb-6'> description </label>
+                                <input type='text' name='meta[description]'
+                                    value='{{ old('meta.description', $post->meta['description'] ?? '') }}' />
+
+                            </div>
+                            <div>
+                                <label for='' class='flex flex-col gap-4 mb-6'> keywords </label>
+                                <input type='text' name='meta[keywords]'
+                                    value='{{ old('meta.keywords', $post->meta['keywords'] ?? '') }}' />
+
+                            </div>
+                            {{-- <div>
+                                <label for='' class='flex flex-col gap-4 mb-6'>author</label>
+                                <input type='text' name='meta[author]'
+                                    value='{{ old('meta.author', $post->meta['author'] ?? '') }}' />
+
+                            </div> --}}
+                        </div>
+                    </h3>
+                </section>
+
                 <button type="submit" class="bg-green-600">Publish</button>
             </div>
             <!-- Sidebar: Publishing Settings -->
@@ -120,6 +152,18 @@
                         @endforeach
 
                     </select>
+
+                    <!-- Published At -->
+                    <section>
+                        <h3 class="font-ui-label text-ui-label text-on-surface mb-4 uppercase tracking-wider">Publish
+                            Date</h3>
+                        <div class="flex flex-wrap gap-2">
+                            <input value="{{ old('published_at', $post->published_at) }}" type="datetime-local"
+                                name="published_at" placeholder="Add new category..."
+                                class='w-full rounded-xl bg-white border border-outline-variant focus:ring-primary focus:outline-none' />
+
+                        </div>
+                    </section>
                     <!-- Tags -->
                     <section>
                         <h3 class="font-ui-label text-ui-label text-on-surface mb-4 uppercase tracking-wider">Tags</h3>

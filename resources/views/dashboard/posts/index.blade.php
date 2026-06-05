@@ -122,7 +122,7 @@
                                             class="font-headline-md text-[20px] leading-snug group-hover:text-primary transition-colors">
                                             {{ $post['title'] }}</h3>
                                         <p class="text-metadata font-metadata text-on-surface-variant mt-1">Published on
-                                            {{ $post->created_at->format('M j, Y H:i') }}</p>
+                                            {{ $post->publish_time?->format('M j, Y H:i') }}</p>
                                     </div>
                                     <div class="md:col-span-2 flex flex-col">
                                         <span class="text-metadata font-metadata text-outline">Engagement</span>
@@ -140,9 +140,9 @@
                                     </div>
                                     <div class="md:col-span-2">
                                         <span
-                                            class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-50 text-green-700 text-[12px] font-bold border border-green-200">
-                                            <span class="h-1.5 w-1.5 rounded-full bg-green-600"></span>
-                                            {{ ucfirst($post->status) }}
+                                            class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-{{ $post->status->getColor() }}-50 text-{{ $post->status->getColor() }}-700 text-[12px] font-bold border border-green-200">
+                                            <span class="h-1.5 w-1.5 rounded-full bg-{{ $post->status->getColor() }}"></span>
+                                            {{ $post->status->getLabel() }}
                                         </span>
                                     </div>
                                     <div

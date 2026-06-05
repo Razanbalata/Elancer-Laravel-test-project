@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use App\Enums\PostStatus;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 
 class Post extends Model
 {
@@ -26,7 +28,18 @@ class Post extends Model
         'cover_image',
         'status',
         'views',
+        'published_at',
+        'meta'
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'published_at' => 'datetime',
+            'meta' => 'json',
+            'status' => PostStatus::class,
+        ];
+    }
 
     public function user(): BelongsTo
     {
@@ -66,6 +79,13 @@ class Post extends Model
         return new Attribute(
             get: fn() => $this->cover_image ? asset('storage/' . $this->cover_image) : asset('images/default-thumbnail.jpg')
             // get:fun()=>$this->cover_image ? Storage::disk('public')->url($this->cover_image):null)
+        );
+    }
+    public function publishTime(): Attribute
+    {
+        return new Attribute(
+            get: fn($value) => $this->published_at ?? $this->created_at,
+
         );
     }
 }

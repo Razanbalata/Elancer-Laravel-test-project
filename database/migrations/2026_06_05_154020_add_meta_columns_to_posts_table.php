@@ -15,6 +15,7 @@ return new class extends Migration
             $table->timestamp('published_at')->nullable()->after('status');
             $table->json('meta')->nullable()->after('published_at');
             $table->softDeletes(); //deleted_at : timestamp 
+           // $table->enum('status', ['draft', 'published', 'archived'])->default('draft')->change();
             $table->index('published_at');
         });
     }
@@ -28,6 +29,8 @@ return new class extends Migration
             //
             $table->dropColumn(['published_at','meta']);
             $table->dropSoftDeletes();
+            // $table->enum('status', ['draft', 'published'])->default('draft')->change();
+            //  $table->dropIndex(['published_at']);
             
         });
     }

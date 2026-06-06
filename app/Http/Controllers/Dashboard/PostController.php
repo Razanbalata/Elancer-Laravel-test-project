@@ -38,6 +38,7 @@ class PostController extends Controller
         //$posts = $user->posts; // use magic methods by __get() to search if there is a function with the name posts() in the User model and call it to get the posts of the user
 
         $posts = $user->posts()
+        ->withTrashed() // to include soft deleted posts in the result so we can show them in the view with a deleted badge and also to be able to restore them if needed, without this only non-deleted posts will be included in the result and we won't be able to show or restore deleted posts
             ->with('category') // to solve N+1 problem by eager loading the category relationship for all posts in one query instead of querying for each post separately when accessing $post->category in the view
             ->select('posts.*')
             //  ->addSelect(
@@ -227,11 +228,30 @@ class PostController extends Controller
         //Post::destroy($id); 
         $post = Post::findOrFail($id);
         $post->delete();
+
+        // if ($post->cover_image) {
+        //     Storage::disk('public')->delete($post->cover_image);
+        // }
+        return redirect()
+            ->route("dashboard.posts.index")
+            ->with('status', 'Post deleted successfully!');
+    }
+    public function restore(string $id){
+        $post = Post::withTrashed()->findOrFail($id);
+        $post->restore();
+        return redirect()
+            ->route("dashboard.posts.index")
+            ->with('status', 'Post restored successfully!');
+    }
+
+    public function forceDelete(string $id){
+        $post = Post::withTrashed()->findOrFail($id);
+        $post->forceDelete();
         if ($post->cover_image) {
             Storage::disk('public')->delete($post->cover_image);
         }
         return redirect()
             ->route("dashboard.posts.index")
-            ->with('status', 'Post deleted successfully!');
-    }
+            ->with('status', 'Post permanently deleted successfully!');
+    } 
 }

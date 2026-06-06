@@ -47,6 +47,9 @@ Route::group([
     'as'=>'dashboard.',
     'prefix'=>'dashboard/'
 ], function () {
+    Route::put('posts/{post}/restore', [DashboardPostController::class, 'restore'])->name('posts.restore');
+    Route::delete('posts/{post}/force', [DashboardPostController::class, 'forceDelete'])->name('posts.forceDelete');
+     
     Route::resource('posts', DashboardPostController::class);
 });
 Route::get('/posts/{slug}', [PostController::class, 'show'])->name('posts.show');

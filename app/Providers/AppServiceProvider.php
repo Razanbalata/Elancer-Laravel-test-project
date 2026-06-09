@@ -26,7 +26,7 @@ class AppServiceProvider extends ServiceProvider
         if (request()->is("dashboard/*")) {
             Paginator::useTailwind();
         } else {
-            Paginator::useBootstrapFive();
+            Paginator::defaultView('pagination.custom-tailwind');
         }
     }
 }

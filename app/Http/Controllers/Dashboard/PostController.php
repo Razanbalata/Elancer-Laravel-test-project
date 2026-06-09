@@ -38,15 +38,15 @@ class PostController extends Controller
         //$posts = $user->posts; // use magic methods by __get() to search if there is a function with the name posts() in the User model and call it to get the posts of the user
 
         $posts = $user->posts()
-        ->withTrashed() // to include soft deleted posts in the result so we can show them in the view with a deleted badge and also to be able to restore them if needed, without this only non-deleted posts will be included in the result and we won't be able to show or restore deleted posts
+        //->withTrashed() // to include soft deleted posts in the result so we can show them in the view with a deleted badge and also to be able to restore them if needed, without this only non-deleted posts will be included in the result and we won't be able to show or restore deleted posts
             ->with('category') // to solve N+1 problem by eager loading the category relationship for all posts in one query instead of querying for each post separately when accessing $post->category in the view
             ->select('posts.*')
             //  ->addSelect(
             //     DB::raw('(Select COUNT(*) from comments where comments.post_id = posts.id ) AS comments_count
             //  '))
             ->withCount('comments') // aggregate function to count the number of comments for each post and add it as a new attribute comments_count to the post model so we can access it in the view as $post->comments_count without needing to load all comments and count them in PHP which would cause N+1 problem 
-            ->where("status", $status)
-            ->simplePaginate(3);
+            //->where("status", $status)
+            ->paginate(3);
         // ->where("user_id", Auth::id())
         // ->latest()->get();
         return view('dashboard.posts.index', [

@@ -2,12 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\Post;
 
 class HomeController extends Controller
 {
     public function __invoke()
     {
-        return view('home');
+        $posts = Post::query()
+            ->published()
+            ->with(['user', 'category'])
+            ->latest()
+            ->get();
+
+         $featuredPost = $posts->first();
+         $reqularPosts = $posts->skip(1);   
+
+        return view('home', [
+            'featuredPost'=>$featuredPost,
+            'posts' => $reqularPosts,
+        ]);
     }
 }

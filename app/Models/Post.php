@@ -3,13 +3,17 @@
 namespace App\Models;
 
 use App\Enums\PostStatus;
+use App\Models\Scopes\OwnerScope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 
+// #[ScopeBy(OwnerScope::class)] 
 class Post extends Model
 {
 
@@ -44,6 +48,33 @@ class Post extends Model
             'status' => PostStatus::class,
         ];
     }
+
+    protected static function booted()
+    {
+
+        static::addGlobalScope('owner', new OwnerScope);
+    }
+
+    public function scopePublished(Builder $builder, $time = null)
+    {
+        $time ??= now();
+        $builder->withoutGlobalScope('owner')
+            ->where('status', PostStatus::Published)
+            ->where(function ($query) use ($time) {
+                $query->whereNull('published_at')
+                    ->orWhere('published_at', '<', $time);
+            });
+    }
+
+    public function scopeStatus(Builder $builder, string|PostStatus $status)
+    {
+        $builder->where('status', $status);
+    }
+    public function scopeSlug(Builder $builder, string $slug)
+    {
+        $builder->where('slug', $slug);
+    }
+ 
 
     public function user(): BelongsTo
     {

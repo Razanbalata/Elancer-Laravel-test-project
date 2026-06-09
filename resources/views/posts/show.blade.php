@@ -12,12 +12,16 @@
                         src="{{ $post->thumbnail_url }}" />
                     <div>
                         <div class="flex items-center gap-2">
-                            <span class="font-ui-label text-ui-label font-bold text-on-surface">{{ $post->user->name }}</span>
+                            <span
+                                class="font-ui-label text-ui-label font-bold text-on-surface">{{ $post->user->name }}</span>
                             <span class="text-secondary-fixed-dim">•</span>
                             <button
                                 class="text-primary font-ui-label text-ui-label font-semibold hover:underline">Follow</button>
                         </div>
-                        <p class="font-metadata text-metadata text-secondary">{{ $post->created_at->format('M j, Y') }} · {{ $post->read_time }} min read</p>
+                        <p class="font-metadata text-metadata text-secondary">{{ $post->created_at->format('M j, Y') }}
+                            · {{ $post->read_time }} min read
+                            {{ $post->views }} views
+                        </p>
                     </div>
                 </div>
                 <div class="flex gap-2">
@@ -30,8 +34,8 @@
         </header>
         <!-- Content -->
         <div class="space-y-8">
-           {!! $post->content !!}
-            </div>
+            {!! $post->content !!}
+        </div>
         </div>
     </article>
 

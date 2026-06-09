@@ -2,7 +2,10 @@
 
 namespace App\Providers;
 
+use App\Events\PostViewed;
+use App\Listeners\IncrementPostViews;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -28,5 +31,16 @@ class AppServiceProvider extends ServiceProvider
         } else {
             Paginator::defaultView('pagination.custom-tailwind');
         }
+
+        // Event::listen(
+        //     'posts.viewed',
+        //         IncrementPostViews::class,
+
+        // );
+        // Event::listen(
+        //     PostViewed::class,
+        //     IncrementPostViews::class,
+ 
+        // ); // cause i initiate the event in the event class 
     }
 }

@@ -20,7 +20,7 @@ class OwnerScope implements Scope
             if ($user->is_admin) {
                 return;
             }
-            if (Route::id('dashboard.*')) {
+            if (Route::is('dashboard.*')) {
                 $builder->where('user_id', $user->id);
             }
         }

@@ -46,7 +46,7 @@ class PostController extends Controller
             //  '))
             ->withCount('comments') // aggregate function to count the number of comments for each post and add it as a new attribute comments_count to the post model so we can access it in the view as $post->comments_count without needing to load all comments and count them in PHP which would cause N+1 problem 
             ->where("status", $status)
-            ->get();
+            ->simplePaginate(3);
         // ->where("user_id", Auth::id())
         // ->latest()->get();
         return view('dashboard.posts.index', [

@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 
-// #[ScopeBy(OwnerScope::class)] 
+// #[ScopeBy(OwnerScope::class)]  // the name of scope is the global scope name itself (OwnerScope)
 class Post extends Model
 {
 

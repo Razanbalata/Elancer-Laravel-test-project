@@ -202,6 +202,7 @@
                             </div>
                         </div>
                     @endforeach
+                    {{ $posts->links() }}
                 </div>
                 <!-- Pagination -->
                 <div class="flex items-center justify-between pt-8">

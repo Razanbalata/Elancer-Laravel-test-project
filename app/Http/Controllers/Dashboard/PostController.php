@@ -98,8 +98,8 @@ class PostController extends Controller
         // ]);
 
         $data = array_merge($clean, [
-            'user_id' => Auth::id(),
-            'slug' => Str::slug($request->post('title')),
+           // 'user_id' => Auth::id(),
+          //  'slug' => Str::slug($request->post('title')),
             'status' => "published",
             // 'cover_image' => $cover_image_path
             'cover_image' => $fileUpload->handle(key: 'cover', path: 'covers')
@@ -247,9 +247,9 @@ class PostController extends Controller
     public function forceDelete(string $id){
         $post = Post::withTrashed()->findOrFail($id);
         $post->forceDelete();
-        if ($post->cover_image) {
-            Storage::disk('public')->delete($post->cover_image);
-        }
+        // if ($post->cover_image) {
+        //     Storage::disk('public')->delete($post->cover_image);
+        // }
         return redirect()
             ->route("dashboard.posts.index")
             ->with('status', 'Post permanently deleted successfully!');

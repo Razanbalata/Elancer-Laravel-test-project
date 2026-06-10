@@ -134,7 +134,7 @@
                             </div>
                         @endif
                         <input type='file' name='cover' accept="image/*" />
-                        @error('cover')
+                        @error('cover_image')
                             @foreach ($errors->get() as $message)
                                 <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                             @endforeach

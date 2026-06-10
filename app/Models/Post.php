@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\PostStatus;
 use App\Models\Scopes\OwnerScope;
+use App\Observers\PostObserver;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
@@ -11,9 +12,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 // #[ScopeBy(OwnerScope::class)]  // the name of scope is the global scope name itself (OwnerScope)
+// #[ObservedBy(PostObserver::class)]
 class Post extends Model
 {
 
@@ -27,11 +31,11 @@ class Post extends Model
     public $timestamps = true;
 
     protected $fillable = [
-        'user_id',
+        //'user_id',
         'category_id',
         'title',
         'content',
-        'slug',
+        //'slug',
         'excerpt',
         'cover_image',
         'status',
@@ -52,7 +56,19 @@ class Post extends Model
     protected static function booted()
     {
 
-        static::addGlobalScope('owner', new OwnerScope);
+        // static::addGlobalScope('owner', new OwnerScope);
+        // creating,created,updating,updated,deleting,deleted,restoring,restored,... 
+        //retrieved,saving,saved(for update or create)
+        // static::creating(function (Post $post) {
+        //     $post->slug = Str::slug($post->title);
+        //     $post->user_id = Auth::id();
+        // });
+        // static::forceDeleted(function (Post $post){
+        //     if($post->cover_image){
+        //         Storage::disk('public')->delete($post->cover_image);
+        //     }
+        // });
+        static::observe(new PostObserver);
     }
 
     public function scopePublished(Builder $builder, $time = null)
@@ -74,7 +90,7 @@ class Post extends Model
     {
         $builder->where('slug', $slug);
     }
- 
+
 
     public function user(): BelongsTo
     {

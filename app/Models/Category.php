@@ -27,4 +27,16 @@ class Category extends Model
     {
         return $this->hasMany(Category::class, 'parent_id');
     }
+
+
+    // protected static function booted(){
+    //     static::deleted(function(Category $category){
+    //         $category->posts()->delete();
+    //     });
+    //     static::restored(function(Category $category){
+    //         $category->posts->update([
+    //             'deleted_at'=>null,
+    //         ]);
+    //     });
+    // }
 }

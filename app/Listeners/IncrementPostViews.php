@@ -6,6 +6,9 @@ use App\Events\PostViewed;
 use App\Models\Post;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Session;
 
 class IncrementPostViews
 {
@@ -22,6 +25,20 @@ class IncrementPostViews
      */
     public function handle(PostViewed $event): void
     {
+        //$postViews = Session::get('post-views', []);
+        $postViews = Cookie::get('post-views', []);
+        if(is_string($postViews)){
+            $postViews = unserialize($postViews);
+        }
+        if (in_array($event->post->id, $postViews)) {
+            return;
+        }
+        $postViews[] = $event->post->id;
+        //Session::put('post-views', $postViews);
+        //Session::forget('post-views');
+        Cookie::queue('post-views', serialize($postViews), 2);
+        //Cookie::queue('post-views',',-2');
+        // Response::withCookie(Cookie::make('post-views', $postViews,2));
         $event->post->increment('views');
     }
 }

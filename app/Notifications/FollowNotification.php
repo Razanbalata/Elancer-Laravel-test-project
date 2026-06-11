@@ -25,7 +25,7 @@ class FollowNotification extends Notification
     public function via(object $notifiable): array
     {
         //$notifiable => the user where will recieve the notifiaction
-        return ['mail', 'database', 'broadcast',  'vonage'];
+        return ['mail', 'database', 'broadcast'];
     }
 
     /**

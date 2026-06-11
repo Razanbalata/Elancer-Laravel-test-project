@@ -15,14 +15,22 @@ class RecommendedAuthors extends Component
     /**
      * Create a new component instance.
      */
-    public function __construct(public string $title,$count=3)
-    { 
-        //
+    public function __construct(public string $title, $count = 3)
+    {
+        // SELECT users.*
+        // (SELECT 1 followers WEHER followers.follower_id = users.id AND followers.user_id = auth)
+        // FROM users LIMIT :count;
+
         $this->authors = User::query()
-        ->where('id','<>',Auth::id() ?? 0)
-        ->limit($count)
-        ->get();
-        
+            ->withExists([
+                'followers' => function ($query) {
+                    $query->where('follower_id', Auth::id() ?? 0);
+                }
+            ])
+            ->where('id', '<>', Auth::id() ?? 0)
+            ->limit($count)
+            ->get();
+       //dd($this->authors);
     }
 
     /**

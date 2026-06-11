@@ -16,14 +16,17 @@ class FollowController extends Controller
 
         $follower = $request->user(); // المستخدم الحالي
         $user = User::query()->findOrFail($id);
-        $follower->followings()->attach($user->id, [
-            'id' => Str::uuid(),
-            'created_at' => now(),
-        ]);
+        $exists = $follower->followings()->where('user_id', $user->id)->exists();
+        if (!$exists && $follower->id !== $user->id) {
+            $follower->followings()->attach($user->id, [
+                'id' => Str::uuid(),
+                'created_at' => now(),
+            ]);
 
-        // send notifcation 
-        $user->notify(new FollowNotification($user, $follower));
-
+            // send notifcation 
+            $user->notify(new FollowNotification($user, $follower));
+        }
+        
         return Redirect::back();
     }
     public function destroy(Request $request, string $id)

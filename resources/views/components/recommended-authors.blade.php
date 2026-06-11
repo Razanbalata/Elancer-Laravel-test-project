@@ -4,8 +4,12 @@
      </h3>
      <div class="space-y-4">
          @foreach ($authors as $author)
-             <form method='post' action='{{ route('users.follow', $author->id) }}'>
+             <form method='post'
+                 action='{{ route($author->followers_exists ? 'users.unfollow' : 'users.follow', $author->id) }}'>
                  @csrf
+                 @if($author->followers_exists)
+                 @method('delete')
+                 @endif
                  <div class="flex items-center justify-between">
 
                      <div class="flex items-center gap-3">
@@ -16,7 +20,7 @@
                          </div>
                      </div>
                      <button type='submit'
-                         class="px-3 py-1 border border-on-surface text-on-surface rounded-full font-metadata text-metadata font-bold hover:bg-on-surface hover:text-white transition-all">Follow</button>
+                         class="px-3 py-1 border border-on-surface text-on-surface rounded-full font-metadata text-metadata font-bold hover:bg-on-surface hover:text-white transition-all">{{ $author->followers_exists ? 'Unfollow' : 'Follow' }}</button>
 
 
                  </div>

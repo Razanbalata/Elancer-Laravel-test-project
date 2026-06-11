@@ -3,6 +3,7 @@
 use App\Http\Controllers\Dashboard\PostController as DashboardPostController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Dashboard\CategoryController as DashboardCategoryController;
+use App\Http\Controllers\Dashboard\NotificationController;
 use App\Http\Controllers\FollowController;
 use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\App;
@@ -52,6 +53,17 @@ Route::group([
     Route::delete('posts/{post}/force', [DashboardPostController::class, 'forceDelete'])->name('posts.forceDelete');
      
     Route::resource('posts', DashboardPostController::class);
+
+    Route::group([
+        'as'=>'notifications.',
+    'prefix'=>'notifications/',
+    'controller'=>NotificationController::class
+    ],function(){
+        Route::get('/','index')->name('index');
+        Route::patch('/{id}/read','read')->name('read');
+        Route::patch('/{id}/unread','unread')->name('unread');
+        Route::delete('/{id}/delete','destroy')->name('delete');
+    });
 });
 Route::get('/posts/{slug}', [PostController::class, 'show'])->name('posts.show');
 Route::get('/u/{username}',function(){})->name('users.profile');

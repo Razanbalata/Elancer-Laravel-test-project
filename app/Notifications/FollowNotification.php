@@ -25,7 +25,8 @@ class FollowNotification extends Notification
     public function via(object $notifiable): array
     {
         //$notifiable => the user where will recieve the notifiaction
-        return ['mail', 'database', 'broadcast'];
+        $via = ['database', 'mail'];
+        return $via;
     }
 
     /**
@@ -34,22 +35,24 @@ class FollowNotification extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->line('The introduction to the notification.')
-            ->action('Notification Action', url('/'))
+            ->subject('New Follower')
+            ->greeting('Hi' . $notifiable->name . ',')
+            ->line("{$this->follower->name} started following you.")
+            ->action('View Profile', route('users.profile', $this->follower->username))
             ->line('Thank you for using our application!');
     }
 
     public function toDatabase(object $notifiable): array
     {
-       return [
-        'title'=>'New fllower',
-        'body'=>"{$this->follower->name} started following you.",
-        'link'=>route('users.profile',$this->follower->username),
-        'meta'=>[
-            'follower_id'=>$this->follower->id,
-            "follower_avatar"=>$this->follower->avatar
-        ]
-       ];
+        return [
+            'title' => 'New fllower',
+            'body' => "{$this->follower->name} started following you.",
+            'link' => route('users.profile', $this->follower->username),
+            'meta' => [
+                'follower_id' => $this->follower->id,
+                "follower_avatar" => $this->follower->avatar
+            ]
+        ];
     }
 
 

@@ -2,31 +2,15 @@
 
 namespace App\View\Components;
 
+use App\Models\User;
 use Closure;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\Component;
 
 class RecommendedAuthors extends Component
 {
-    public array $authors =[];
-    public array $data = [
-        [
-            'name' => 'John Doe',
-            'username' => '@johndoe',
-            'avatar' => 'https://randomuser.me/api/portraits/men/1.jpg'
-        ],
-        [
-            'name' => 'Jane Smith',
-            'username' => '@janesmith',
-            'avatar' => 'https://randomuser.me/api/portraits/women/1.jpg'
-        ],
-        [
-            'name' => 'Bob Johnson',
-            'username' => '@bobjohnson',
-            'avatar' => 'https://randomuser.me/api/portraits/men/2.jpg'
-        ]
-    ];
-    
+    public $authors;
 
     /**
      * Create a new component instance.
@@ -34,7 +18,10 @@ class RecommendedAuthors extends Component
     public function __construct(public string $title,$count=3)
     { 
         //
-        $this->authors = array_slice($this->data,0,$count);
+        $this->authors = User::query()
+        ->where('id','<>',Auth::id() ?? 0)
+        ->limit($count)
+        ->get();
         
     }
 

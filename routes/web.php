@@ -3,6 +3,7 @@
 use App\Http\Controllers\Dashboard\PostController as DashboardPostController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Dashboard\CategoryController as DashboardCategoryController;
+use App\Http\Controllers\FollowController;
 use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
@@ -53,6 +54,9 @@ Route::group([
     Route::resource('posts', DashboardPostController::class);
 });
 Route::get('/posts/{slug}', [PostController::class, 'show'])->name('posts.show');
+Route::get('/u/{username}',function(){})->name('users.profile');
+Route::post('user/{id}/follow',[FollowController::class,'store'])->name('users.follow')->middleware('auth:web');
+Route::delete('users/{id}/unfollow',[FollowController::class,'destroy'])->name('users.unfollow')->middleware('auth:web');
 Route::group([
     'as'=>'dashboard.',
     'prefix'=>'dashboard/',

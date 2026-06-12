@@ -36,10 +36,14 @@ class FollowNotification extends Notification
     {
         return (new MailMessage)
             ->subject('New Follower')
-            ->greeting('Hi' . $notifiable->name . ',')
-            ->line("{$this->follower->name} started following you.")
-            ->action('View Profile', route('users.profile', $this->follower->username))
-            ->line('Thank you for using our application!');
+            // ->greeting('Hi' . $notifiable->name . ',')
+            // ->line("{$this->follower->name} started following you.")
+            // ->action('View Profile', route('users.profile', $this->follower->username))
+            // ->line('Thank you for using our application!');
+            ->view('mails.follow',[
+                'user'=>$notifiable,
+                'follower'=>$this->follower
+            ]);
     }
 
     public function toDatabase(object $notifiable): array

@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\GreetingMessage;
 use App\Models\User;
 use App\Notifications\FollowNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;
 
@@ -23,10 +26,18 @@ class FollowController extends Controller
                 'created_at' => now(),
             ]);
 
-            // send notifcation 
+            // send notifcation for specific user 
             $user->notify(new FollowNotification($user, $follower));
+
+            // $users = User::all() for all users
+            // Notification::send($users,new FollowNotification($user, $follower));
+
+            // to send mail for not signed in user in my project 
+            //  Notification::route('mail','info@test.co')->notify(new FollowNotification($user, $follower));
+
+            //  Mail::to([$user->email])->send(new GreetingMessage($user->name)); // to send mail outside notification zone
         }
-        
+
         return Redirect::back();
     }
     public function destroy(Request $request, string $id)

@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Override;
 
 class User extends Authenticatable
 {
@@ -71,5 +72,11 @@ class User extends Authenticatable
                 'created_at'
             ])
         ;
+    }
+
+    public function routeNotificationFor($notification = null)
+    {
+        // to show which column return the type of email
+        return $this->notification_email;
     }
 }

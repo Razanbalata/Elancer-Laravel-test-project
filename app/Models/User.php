@@ -74,9 +74,9 @@ class User extends Authenticatable
         ;
     }
 
-    public function routeNotificationFor($notification = null)
-    {
-        // to show which column return the type of email
-        return $this->notification_email;
-    }
+    // public function routeNotificationFor($notification = null)
+    // {
+    //     // to show which column return the type of email
+    //     return $this->notification_email;
+    // }
 }

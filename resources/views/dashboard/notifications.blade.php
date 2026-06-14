@@ -34,25 +34,25 @@
         </div>
         <!-- Notification Groups -->
         <div class="space-y-12">
-            
+
             <section>
                 <h2 class="font-ui-label text-ui-label text-secondary uppercase tracking-widest mb-6">Today</h2>
                 <div class="space-y-0.5">
                     <!-- Notification Item 1 (Unread) -->
                     <div
-                        class="group relative flex items-start gap-4 p-4 -mx-4 rounded-lg hover:bg-surface-container-lowest transition-all cursor-pointer">
+                        class="flex flex-col group relative flex items-start gap-4 p-4 -mx-4 rounded-lg hover:bg-surface-container-lowest transition-all cursor-pointer">
                         @foreach ($notifications as $notification)
-            <div class='p-3 bg-white rounded shadow:sm'>
-                <h3>{{ $notification->data['title'] }}</h3>
-                <p>{{ $notification->data['body'] }}</p>
-                <div>{{ $notification->created_at->diffForHumans() }}</div>
-            </div>
-        @endforeach
-                </div>
+                            <div class='p-3 bg-white rounded shadow:sm'>
+                                <h3>{{ $notification->data['title'] }}</h3>
+                                <p>{{ $notification->data['body'] }}</p>
+                                <div>{{ $notification->created_at->diffForHumans() }}</div>
+                            </div>
+                        @endforeach
+                    </div>
             </section>
-            
+
         </div>
-        
+
     </main>
 
 </x-layout>

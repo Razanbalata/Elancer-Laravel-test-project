@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-     <title>{{ $title }}</title>
+    <title>{{ $title }}</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Source+Serif+4:wght@400;600;700&amp;display=swap"
@@ -134,8 +134,8 @@
             },
         }
     </script>
-     {{ $style ?? '' }}
-     {{ $headScripts ?? '' }}
+    {{ $style ?? '' }}
+    {{ $headScripts ?? '' }}
 </head>
 
 <body class="font-body-md text-body-md selection:bg-primary-fixed selection:text-on-primary-fixed">
@@ -143,17 +143,18 @@
     <header class="fixed top-0 z-50 w-full bg-surface border-b border-outline-variant">
         <div class="flex justify-between items-center w-full px-gutter max-w-container-max mx-auto h-16">
             <div class="flex items-center gap-8">
-                <a class="font-display-lg-mobile text-display-lg-mobile font-bold text-on-surface" href="{{ route('home') }}">Ink
+                <a class="font-display-lg-mobile text-display-lg-mobile font-bold text-on-surface"
+                    href="{{ route('home') }}">Ink
                     &amp; Paper</a>
                 <nav class="hidden md:flex items-center gap-6">
                     @section('nav')
-                    <a class="text-primary font-bold border-b-2 border-primary pb-1 font-ui-label text-ui-label hover:text-primary transition-colors duration-200"
-                        href="#">Feed</a>
-                    <a class="text-on-surface-variant font-medium font-ui-label text-ui-label hover:text-primary transition-colors duration-200"
-                        href="#">Authors</a>
-                    <a class="text-on-surface-variant font-medium font-ui-label text-ui-label hover:text-primary transition-colors duration-200"
-                        href="#">Dashboard</a>
-                        @show
+                        <a class="text-primary font-bold border-b-2 border-primary pb-1 font-ui-label text-ui-label hover:text-primary transition-colors duration-200"
+                            href="#">Feed</a>
+                        <a class="text-on-surface-variant font-medium font-ui-label text-ui-label hover:text-primary transition-colors duration-200"
+                            href="#">Authors</a>
+                        <a class="text-on-surface-variant font-medium font-ui-label text-ui-label hover:text-primary transition-colors duration-200"
+                            href="#">Dashboard</a>
+                    @show
                 </nav>
             </div>
             <div class="flex items-center gap-4">
@@ -164,22 +165,72 @@
                         placeholder="Search..." type="text" />
                 </div>
                 <div class="flex items-center gap-2">
-                    <button
-                        class="p-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-all">
-                        <span class="material-symbols-outlined" data-icon="notifications">notifications</span>
-                    </button>
+                    <div class="relative inline-block text-left" id="notification-dropdown-wrapper">
+
+                        <div class="relative inline-block text-left" id="notification-dropdown-wrapper">
+
+                            <button id="notification-btn"
+                                class="relative p-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-all focus:outline-none">
+
+                                <span class="material-symbols-outlined">
+                                    notifications
+                                </span>
+
+                                @if (auth()->user()->unreadNotifications->count() > 0)
+                                    <span
+                                        class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                        {{ auth()->user()->unreadNotifications->count() }}
+                                    </span>
+                                @endif
+                            </button>
+
+                            <div id="notification-dropdown"
+                                class="hidden absolute left-0 mt-2 w-80 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl shadow-lg z-50 overflow-hidden">
+
+                                <div
+                                    class="p-3 border-b border-zinc-100 dark:border-zinc-800 font-semibold text-sm text-zinc-700 dark:text-zinc-300">
+                                    الإشعارات الأخيرة
+                                </div>
+
+                                <div class="max-h-72 overflow-y-auto">
+                                    @forelse(auth()->user()->unreadNotifications->take(5) as $notification)
+                                        <a href="{{ route('dashboard.notifications.read', $notification->id) }}"
+                                            class="block p-3 hover:bg-zinc-50 dark:hover:bg-zinc-800 border-b border-zinc-100 dark:border-zinc-800 transition-colors text-right">
+                                            <div class="flex flex-col items-start justify-start text-sm text-zinc-800 dark:text-zinc-200">
+                                                <strong class="font-medium">{{ $notification->data['title'] }}</strong>
+                                                <p>{{ $notification->data['body'] }}</p>
+                                            </div>
+                                            <span class="text-xs text-left text-zinc-400 block mt-1">
+                                                {{ $notification->created_at->diffForHumans() }}
+                                            </span>
+                                        </a>
+                                    @empty
+                                        <div class="p-6 text-center text-sm text-zinc-500">
+                                            لا توجد إشعارات جديدة
+                                        </div>
+                                    @endforelse
+                                </div>
+
+                                <a href="{{ route('dashboard.notifications.index') }}"
+                                    class="block text-center p-3 text-sm font-medium text-primary hover:bg-zinc-50 dark:hover:bg-zinc-800 border-t border-zinc-100 dark:border-zinc-800">
+                                    عرض كل الإشعارات
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
                     <button
                         class="p-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-all">
                         <span class="material-symbols-outlined" data-icon="bookmark">bookmark</span>
                     </button>
-                   <x-user-menu/>
+                    <x-user-menu />
                 </div>
             </div>
         </div>
     </header>
     <!-- Main Content Layout -->
     <main class="{{ $mainClass }}">
-      {{ $slot }}
+        {{ $slot }}
     </main>
     <footer class="bg-surface border-t border-outline-variant">
         <div
@@ -212,5 +263,25 @@
         </div>
     </footer>
 </body>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const btn = document.getElementById('notification-btn');
+        const dropdown = document.getElementById('notification-dropdown');
+        const wrapper = document.getElementById('notification-dropdown-wrapper');
+
+        // فتح وإغلاق القائمة عند الضغط على زر الجرس
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            dropdown.classList.toggle('hidden');
+        });
+
+        // إغلاق القائمة تلقائياً إذا ضغط المستخدم في أي مكان خارج الـ Dropdown
+        document.addEventListener('click', function(e) {
+            if (!wrapper.contains(e.target)) {
+                dropdown.classList.add('hidden');
+            }
+        });
+    });
+</script>
 
 </html>

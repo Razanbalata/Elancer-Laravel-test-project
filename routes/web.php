@@ -60,7 +60,7 @@ Route::group([
     'controller'=>NotificationController::class
     ],function(){
         Route::get('/','index')->name('index');
-        Route::get('/{id}/read','read')->name('read'); // make it get to test the route if it is running but the right way is patch
+        Route::patch('/{id}/read','read')->name('read'); // make it get to test the route if it is running but the right way is patch
         Route::patch('/{id}/unread','unread')->name('unread');
         Route::delete('/{id}/delete','destroy')->name('delete');
     });

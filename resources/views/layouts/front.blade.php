@@ -194,16 +194,24 @@
 
                                 <div class="max-h-72 overflow-y-auto">
                                     @forelse(auth()->user()->unreadNotifications->take(5) as $notification)
-                                        <a href="{{ route('dashboard.notifications.read', $notification->id) }}"
-                                            class="block p-3 hover:bg-zinc-50 dark:hover:bg-zinc-800 border-b border-zinc-100 dark:border-zinc-800 transition-colors text-right">
-                                            <div class="flex flex-col items-start justify-start text-sm text-zinc-800 dark:text-zinc-200">
-                                                <strong class="font-medium">{{ $notification->data['title'] }}</strong>
-                                                <p>{{ $notification->data['body'] }}</p>
-                                            </div>
-                                            <span class="text-xs text-left text-zinc-400 block mt-1">
-                                                {{ $notification->created_at->diffForHumans() }}
-                                            </span>
-                                        </a>
+                                        <form action='{{ route('dashboard.notifications.read', $notification->id) }}'
+                                            method="POST">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button type='submit'
+                                                class="block p-3 w-full hover:bg-zinc-50 dark:hover:bg-zinc-800 border-b border-zinc-100 dark:border-zinc-800 transition-colors text-right">
+                                                <div
+                                                    class="flex flex-col items-start justify-start text-sm text-zinc-800 dark:text-zinc-200">
+                                                    <strong
+                                                        class="font-medium">{{ $notification->data['title'] }}</strong>
+                                                    <p>{{ $notification->data['body'] }}</p>
+                                                </div>
+                                                <span class="text-xs text-left text-zinc-400 block mt-1">
+                                                    {{ $notification->created_at->diffForHumans() }}
+                                                </span>
+                                            </button>
+
+                                        </form>
                                     @empty
                                         <div class="p-6 text-center text-sm text-zinc-500">
                                             لا توجد إشعارات جديدة

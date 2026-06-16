@@ -135,6 +135,9 @@
             },
         }
     </script>
+    <script>
+        const USER_ID = "{{ auth()->id() }}"
+   </script>
     {{ $style ?? '' }}
     {{ $headScripts ?? '' }}
 </head>

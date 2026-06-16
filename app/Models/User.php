@@ -79,4 +79,8 @@ class User extends Authenticatable
     //     // to show which column return the type of email
     //     return $this->notification_email;
     // }
+
+    public function receivesBroadcastNotificationOn(){
+        return 'App.Models.User.' . $this->id;
+    }
 }

@@ -6,6 +6,7 @@ use App\Mail\GreetingMessage;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
@@ -26,7 +27,7 @@ class FollowNotification extends Notification
     public function via(object $notifiable): array
     {
         //$notifiable => the user where will recieve the notifiaction
-        $via = ['database', 'mail'];
+        $via = ['database', 'mail', 'broadcast'];
         return $via;
     }
 
@@ -38,7 +39,7 @@ class FollowNotification extends Notification
 
         // return (new GreetingMessage($notifiable->name))->to($notifiable->email);
 
-        return (new MailMessage) 
+        return (new MailMessage)
             ->subject('New Follower')
             // ->greeting('Hi' . $notifiable->name . ',')
             // ->line("{$this->follower->name} started following you.")
@@ -63,6 +64,18 @@ class FollowNotification extends Notification
         ];
     }
 
+    public function toBroadcast(object $notifiable): array|BroadcastMessage
+    {
+        return new BroadcastMessage([
+            'title' => 'New fllower',
+            'body' => "{$this->follower->name} started following you.",
+            'link' => route('users.profile', $this->follower->username),
+            'meta' => [
+                'follower_id' => $this->follower->id,
+                "follower_avatar" => $this->follower->avatar
+            ]
+        ]);
+    }
 
     /**
      * Get the array representation of the notification.

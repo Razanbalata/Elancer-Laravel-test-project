@@ -7,6 +7,6 @@ Echo.private(`App.Models.User.${USER_ID}`)
 })
 
 Echo.private(`posts.${USER_ID}`)
-.listen('PostViewed',function(){
+.listen('.post-viewed',function(){
     alert('posst-viewed');
 })

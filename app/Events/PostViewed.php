@@ -41,7 +41,7 @@ class PostViewed implements ShouldBroadcast
         ];
     }
 
-    // public function broadcastAs():string{
-    //     return 'post-viewed';
-    // }
+    public function broadcastAs():string{
+        return 'post-viewed';
+    }
 }

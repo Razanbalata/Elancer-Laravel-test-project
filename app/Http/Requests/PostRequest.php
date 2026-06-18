@@ -24,7 +24,8 @@ class PostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => ['required', 'string', 'min:3', 'max:255'],
+            // 'title' => ['sometimes','required', 'string', 'min:3', 'max:255'], to show that this field if it not in the req it will not be required
+            'title' => ['sometimes','required', 'string', 'min:3', 'max:255'],
             'content' => [
                 'required',
                 'string',

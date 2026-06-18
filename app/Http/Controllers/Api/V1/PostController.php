@@ -54,9 +54,19 @@ class PostController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Post $post)
+    public function update(PostRequest $request,PostService $service, Post $post)
     {
-        //TO DO
+        try {
+          $post = $service->update($post,$request);
+            return Response::json([
+                'data'=>$post->refresh(),
+            ],201);
+        } catch (Throwable $e) {
+            return response()->json([
+                'status'=>'error',
+                'message'=>'Failed to create post: ' .$e->getMessage(),
+            ],422);
+        }
     }
 
     /**

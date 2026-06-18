@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\SendNotification;
 use App\Mail\GreetingMessage;
 use App\Models\User;
 use App\Notifications\FollowNotification;
@@ -28,6 +29,10 @@ class FollowController extends Controller
 
             // send notifcation for specific user 
             $user->notify(new FollowNotification($user, $follower));
+
+            // dispatch(new SendNotification(
+            //     new FollowNotification($user,$follower),$user
+            // ));
 
             // $users = User::all() for all users
             // Notification::send($users,new FollowNotification($user, $follower));

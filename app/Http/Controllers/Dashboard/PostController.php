@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\PostRequest;
 use App\Models\Category;
 use App\Models\Post;
+use App\Services\PostService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -38,7 +39,7 @@ class PostController extends Controller
         //$posts = $user->posts; // use magic methods by __get() to search if there is a function with the name posts() in the User model and call it to get the posts of the user
 
         $posts = $user->posts()
-        //->withTrashed() // to include soft deleted posts in the result so we can show them in the view with a deleted badge and also to be able to restore them if needed, without this only non-deleted posts will be included in the result and we won't be able to show or restore deleted posts
+            //->withTrashed() // to include soft deleted posts in the result so we can show them in the view with a deleted badge and also to be able to restore them if needed, without this only non-deleted posts will be included in the result and we won't be able to show or restore deleted posts
             ->with('category') // to solve N+1 problem by eager loading the category relationship for all posts in one query instead of querying for each post separately when accessing $post->category in the view
             ->select('posts.*')
             //  ->addSelect(
@@ -71,8 +72,18 @@ class PostController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(PostRequest $request, FileUpload $fileUpload, SyncPostTags $syncPostTags)
+    public function store(PostRequest $request, PostService $postService)
     {
+        try {
+            $postService->create($request);
+        } catch (Throwable $e) {
+            return back()
+                ->withInput()
+                ->withErrors([
+                    'error' => 'Failed to create post: ' . $e->getMessage(),
+                ]);
+        }
+
         // $cover_image_path = null;
         // if ($request->hasFile('cover')) {
         //     $image = $request->file('cover'); // uploadedfile instance
@@ -90,33 +101,17 @@ class PostController extends Controller
 
 
         // $fileupload = app(FileUpload::class); // new way to use the class in the function
-        $clean = $request->validated();
+
 
         // $clean = $request->validate(, [
         //     'required' => ':attribute is Required!',
         //     'title.required' => 'Please provide a title for the post',
         // ]);
 
-        $data = array_merge($clean, [
-           // 'user_id' => Auth::id(),
-          //  'slug' => Str::slug($request->post('title')),
-            'status' => "published",
-            // 'cover_image' => $cover_image_path
-            'cover_image' => $fileUpload->handle(key: 'cover', path: 'covers')
-        ]);
-       // $post = Post::create($data);
+
+        // $post = Post::create($data);
         // Transaction to ensure data integrity when creating a post and its associated tags, so if any error occurs during the process, the transaction will be rolled back and no partial data will be saved to the database
-        DB::beginTransaction();
-        try {
-            $post = Post::create($data);
-            $syncPostTags->handle($post, $clean['tags'] ?? '');
-            DB::commit();
-        } catch (Throwable $e) {
-            DB::rollBack();
-            return back()
-                ->withInput() // for old input values to be available in the form fields after redirecting back to the form
-                ->withErrors(['msg' => 'Error creating post: ' . $e->getMessage()]); // for the error message to be available in the view after redirecting back to the form
-        }
+
 
         // Create tags and associate with the post
         // $tags = explode(',', $clean['tags'] ?? '');
@@ -202,13 +197,13 @@ class PostController extends Controller
 
             'cover_image' => $fileUpload->handle(key: 'cover', path: 'covers'),
         ]);
- 
 
-         DB::transaction(function () use ($post, $data, $syncPostTags, $clean) {
-                $post->update($data);
-                $syncPostTags->handle($post, $clean['tags'] ?? '');
-            });
-      
+
+        DB::transaction(function () use ($post, $data, $syncPostTags, $clean) {
+            $post->update($data);
+            $syncPostTags->handle($post, $clean['tags'] ?? '');
+        });
+
         $previous = $post->getPrevious();
         $prev_cover_image = $previous['cover_image'] ?? null;
         if ($prev_cover_image !== $post->cover_image) {
@@ -236,7 +231,8 @@ class PostController extends Controller
             ->route("dashboard.posts.index")
             ->with('status', 'Post deleted successfully!');
     }
-    public function restore(string $id){
+    public function restore(string $id)
+    {
         $post = Post::withTrashed()->findOrFail($id);
         $post->restore();
         return redirect()
@@ -244,7 +240,8 @@ class PostController extends Controller
             ->with('status', 'Post restored successfully!');
     }
 
-    public function forceDelete(string $id){
+    public function forceDelete(string $id)
+    {
         $post = Post::withTrashed()->findOrFail($id);
         $post->forceDelete();
         // if ($post->cover_image) {
@@ -253,5 +250,5 @@ class PostController extends Controller
         return redirect()
             ->route("dashboard.posts.index")
             ->with('status', 'Post permanently deleted successfully!');
-    } 
+    }
 }

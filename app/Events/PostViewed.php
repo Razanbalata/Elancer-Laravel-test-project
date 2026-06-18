@@ -31,7 +31,7 @@ class PostViewed implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('posts'.$this->post->user_id),
+            new PrivateChannel('posts.'.$this->post->user_id),
         ];
     }
 

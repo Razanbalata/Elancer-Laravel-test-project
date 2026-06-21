@@ -37,6 +37,12 @@
     </style>
 @endpush --}}
 
+    @php
+        $currentCategory = request('category');
+        $currentTag = request('tag');
+        $currentDiscover = request('discover', 'explore');
+    @endphp
+
     @section('nav')
         @parent
         <a class="text-primary font-bold border-b-2 border-primary pb-1 font-ui-label text-ui-label hover:text-primary transition-colors duration-200"
@@ -49,13 +55,17 @@
         <div class="space-y-4">
             <h3 class="font-ui-label text-ui-label uppercase tracking-widest text-secondary font-bold">Discover</h3>
             <ul class="space-y-2">
-                <li><a class="flex items-center gap-3 text-primary font-bold font-ui-label text-ui-label py-1"
-                        href="{{ route('home') }} "><span class="material-symbols-outlined" data-weight="fill"
+                <li><a class="flex items-center gap-3 py-1 font-ui-label text-ui-label
+   {{ $currentDiscover === 'explore' ? 'text-primary font-bold' : 'text-on-surface-variant hover:text-primary' }}"
+                        href="{{ route('home', ['discover' => null]) }}"><span
+                            class="material-symbols-outlined" data-weight="fill"
                             style="font-variation-settings: 'FILL' 1;">explore</span>Explore</a></li>
-                <li><a class="flex items-center gap-3 text-on-surface-variant hover:text-primary transition-colors font-ui-label text-ui-label py-1"
+                <li><a class="flex items-center gap-3 py-1 font-ui-label text-ui-label
+   {{ $currentDiscover === 'popular' ? 'text-primary font-bold' : 'text-on-surface-variant hover:text-primary' }}"
                         href="{{ route('home', ['discover' => 'popular']) }}"><span
                             class="material-symbols-outlined">trending_up</span>Popular</a></li>
-                <li><a class="flex items-center gap-3 text-on-surface-variant hover:text-primary transition-colors font-ui-label text-ui-label py-1"
+                <li><a class="flex items-center gap-3 py-1 font-ui-label text-ui-label
+   {{ $currentDiscover === 'recent' ? 'text-primary font-bold' : 'text-on-surface-variant hover:text-primary' }}"
                         href="{{ route('home', ['discover' => 'recent']) }}"><span
                             class="material-symbols-outlined">history</span>Recent</a></li>
             </ul>
@@ -65,7 +75,10 @@
             </h3>
             <div class="flex flex-wrap gap-2">
                 @foreach ($categories as $category)
-                    <a class="px-3 py-1 bg-surface-container border border-outline-variant rounded-full font-metadata text-metadata hover:bg-outline-variant transition-colors"
+                    <a class="px-3 py-1 text-sm rounded-full border transition-colors
+        {{ $currentCategory === $category->slug
+            ? 'bg-primary text-white border-primary'
+            : 'bg-surface-container text-on-surface-variant hover:bg-outline-variant' }}"
                         href="{{ route('home', ['category' => $category->slug]) }}">#{{ $category->name }}</a>
                 @endforeach
             </div>
@@ -75,11 +88,22 @@
             </h3>
             <div class="flex flex-wrap gap-2">
                 @foreach ($tags as $tag)
-                    <a class="px-3 py-1 bg-surface-container border border-outline-variant rounded-full font-metadata text-metadata hover:bg-outline-variant transition-colors"
+                    <a class="px-3 py-1 text-sm rounded-full border transition-colors
+        {{ $currentTag === $tag->slug
+            ? 'bg-primary text-white border-primary'
+            : 'bg-surface-container text-on-surface-variant hover:bg-outline-variant' }}"
                         href="{{ route('home', ['tag' => $tag->slug]) }}">#{{ $tag->name }}</a>
                 @endforeach
             </div>
         </div>
+
+        @if (request()->hasAny(['category', 'tag', 'discover']))
+            <a href="{{ route('home') }}"
+                class="flex items-center gap-3 text-red-500 hover:text-red-600 font-ui-label text-ui-label py-1">
+                <span class="material-symbols-outlined">close</span>
+                Clear Filters
+            </a>
+        @endif
     </aside>
     {{-- @if ($featuredPost)
     <h1>FEATURED: {{ $featuredPost->title }}</h1>
@@ -108,7 +132,7 @@
                 class="px-8 py-3 border border-primary text-primary font-ui-button text-ui-button rounded-lg hover:bg-primary-container/5 transition-all">
                 Load More Stories
             </button> --}}
-           {{ $posts->links() }}
+            {{ $posts->links() }}
         </div>
     </section>
     <!-- Right Sidebar: Trending & Who to Follow -->

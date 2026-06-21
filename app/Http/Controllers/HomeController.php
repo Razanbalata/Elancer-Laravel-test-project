@@ -13,42 +13,42 @@ class HomeController extends Controller
     {
         $categories = Category::all();
         $tags = Tag::all();
-        $posts = Post::query()
+        $query = Post::query()
             ->published()
             ->with(['user', 'category']);
 
 
         // Ctegory Filter  
         if ($request->filled('category')) {
-            $posts->whereHas('category', function ($query) use ($request) {
+            $query->whereHas('category', function ($query) use ($request) {
                 $query->where('slug', $request->category);
             });
         }
 
         // Tag Filter  
         if ($request->filled('tag')) {
-            $posts->whereHas('tags', function ($q) use ($request) {
+            $query->whereHas('tags', function ($q) use ($request) {
                 $q->where('tags.slug', $request->tag);
             });
         }
 
         // Discover Filter
         if ($request->discover === 'popular') {
-            $posts->orderByDesc('views');
-        } elseif ($request->discover === 'recent') {
-            $posts->latest();
+            $query->orderByDesc('views');
         } else {
-            $posts->latest(); // Explore
+            $query->latest(); // Explore
         }
 
-        $posts = $posts->get();
-        //dd(\DB::table('post_tag')->get());
-        $featuredPost = $posts->first();
-        $regularPosts = $posts->skip(1);
-     
-      return view('home', [
+        $featuredPost = (clone $query)->first();
+
+        $posts = (clone $query)
+            ->when($featuredPost, fn($q) => $q->where('id', '!=', $featuredPost->id))
+            ->paginate(3)
+            ->withQueryString();
+
+        return view('home', [
             'featuredPost' => $featuredPost,
-            'posts' => $regularPosts,
+            'posts' => $posts,
             'tags' => $tags,
             'categories' => $categories
         ]);

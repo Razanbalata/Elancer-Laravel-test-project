@@ -108,7 +108,7 @@
                 class="px-8 py-3 border border-primary text-primary font-ui-button text-ui-button rounded-lg hover:bg-primary-container/5 transition-all">
                 Load More Stories
             </button> --}}
-           
+           {{ $posts->links() }}
         </div>
     </section>
     <!-- Right Sidebar: Trending & Who to Follow -->

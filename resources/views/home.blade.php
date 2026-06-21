@@ -50,28 +50,34 @@
             <h3 class="font-ui-label text-ui-label uppercase tracking-widest text-secondary font-bold">Discover</h3>
             <ul class="space-y-2">
                 <li><a class="flex items-center gap-3 text-primary font-bold font-ui-label text-ui-label py-1"
-                        href="#"><span class="material-symbols-outlined" data-weight="fill"
+                        href="{{ route('home') }} "><span class="material-symbols-outlined" data-weight="fill"
                             style="font-variation-settings: 'FILL' 1;">explore</span>Explore</a></li>
                 <li><a class="flex items-center gap-3 text-on-surface-variant hover:text-primary transition-colors font-ui-label text-ui-label py-1"
-                        href="#"><span class="material-symbols-outlined">trending_up</span>Popular</a></li>
+                        href="{{ route('home', ['discover' => 'popular']) }}"><span
+                            class="material-symbols-outlined">trending_up</span>Popular</a></li>
                 <li><a class="flex items-center gap-3 text-on-surface-variant hover:text-primary transition-colors font-ui-label text-ui-label py-1"
-                        href="#"><span class="material-symbols-outlined">history</span>Recent</a></li>
+                        href="{{ route('home', ['discover' => 'recent']) }}"><span
+                            class="material-symbols-outlined">history</span>Recent</a></li>
             </ul>
+        </div>
+        <div class="space-y-4">
+            <h3 class="font-ui-label text-ui-label uppercase tracking-widest text-secondary font-bold">Topics
+            </h3>
+            <div class="flex flex-wrap gap-2">
+                @foreach ($categories as $category)
+                    <a class="px-3 py-1 bg-surface-container border border-outline-variant rounded-full font-metadata text-metadata hover:bg-outline-variant transition-colors"
+                        href="{{ route('home', ['category' => $category->slug]) }}">#{{ $category->name }}</a>
+                @endforeach
+            </div>
         </div>
         <div class="space-y-4">
             <h3 class="font-ui-label text-ui-label uppercase tracking-widest text-secondary font-bold">Your Tags
             </h3>
             <div class="flex flex-wrap gap-2">
-                <a class="px-3 py-1 bg-surface-container border border-outline-variant rounded-full font-metadata text-metadata hover:bg-outline-variant transition-colors"
-                    href="#">#Development</a>
-                <a class="px-3 py-1 bg-surface-container border border-outline-variant rounded-full font-metadata text-metadata hover:bg-outline-variant transition-colors"
-                    href="#">#DesignSystems</a>
-                <a class="px-3 py-1 bg-surface-container border border-outline-variant rounded-full font-metadata text-metadata hover:bg-outline-variant transition-colors"
-                    href="#">#Minimalism</a>
-                <a class="px-3 py-1 bg-surface-container border border-outline-variant rounded-full font-metadata text-metadata hover:bg-outline-variant transition-colors"
-                    href="#">#Typography</a>
-                <a class="px-3 py-1 bg-surface-container border border-outline-variant rounded-full font-metadata text-metadata hover:bg-outline-variant transition-colors"
-                    href="#">#Future</a>
+                @foreach ($tags as $tag)
+                    <a class="px-3 py-1 bg-surface-container border border-outline-variant rounded-full font-metadata text-metadata hover:bg-outline-variant transition-colors"
+                        href="{{ route('home', ['tag' => $tag->slug]) }}">#{{ $tag->name }}</a>
+                @endforeach
             </div>
         </div>
     </aside>
@@ -85,11 +91,9 @@
     <!-- Center Feed -->
     <section class="col-span-1 md:col-span-7 space-y-12">
         <!-- Featured Article (Bento Style) -->
-        
+
         @if ($featuredPost)
-            
             <x-featured-post :post="$featuredPost" />
-            
         @endif
 
         <div class="grid grid-cols-1 gap-12">
@@ -100,10 +104,11 @@
 
         </div>
         <div class="pt-8 flex justify-center">
-            <button
+            {{-- <button
                 class="px-8 py-3 border border-primary text-primary font-ui-button text-ui-button rounded-lg hover:bg-primary-container/5 transition-all">
                 Load More Stories
-            </button>
+            </button> --}}
+           
         </div>
     </section>
     <!-- Right Sidebar: Trending & Who to Follow -->

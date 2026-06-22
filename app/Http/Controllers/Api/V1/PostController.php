@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PostRequest;
+use App\Http\Resources\PostResource;
 use App\Models\Post;
 use App\Services\PostService;
 use Illuminate\Http\JsonResponse;
@@ -29,9 +30,10 @@ class PostController extends Controller implements HasMiddleware
      */
     public function index()
     {
-        return Post::published()
+        $posts = Post::published()
             ->with(['category:id,name', 'user:id,name,username'])
             ->paginate();
+         return PostResource::collection($posts);
     }
 
     /**
@@ -71,8 +73,9 @@ class PostController extends Controller implements HasMiddleware
     {
         // with() use for qery builder but load use with the obj itself
         // Accept : application/json (requset header to show what data i need to recieve)
-        return $post->load(['category:id,name', 'user:id,name,username']);
-    }
+         $post->load(['category:id,name', 'user:id,name,username']);
+         return new PostResource($post);
+         }
 
     /**
      * Update the specified resource in storage.

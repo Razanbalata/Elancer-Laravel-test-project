@@ -16,6 +16,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
+// #[Appends(['read_time'])]
 // #[ScopeBy(OwnerScope::class)]  // the name of scope is the global scope name itself (OwnerScope)
 // #[ObservedBy(PostObserver::class)]
 class Post extends Model
@@ -42,6 +43,17 @@ class Post extends Model
         'views',
         'published_at',
         'meta'
+    ];
+
+    protected $hidden = [
+        'status',
+        'deleted_at'
+    ];
+
+    protected $appends = [
+        'thumbnail_url',
+        'publish_time',
+        'read_time'
     ];
 
     protected function casts(): array
@@ -122,9 +134,17 @@ class Post extends Model
     public function title(): Attribute // accessor
     {
         return new Attribute(
-            get: fn($value) => ucwords($value)
+            get: fn($value) => ucwords($value),
+            set: fn($value) => strip_tags($value)
         );
     }
+
+    // motator
+    // public function setTitleAttribute($value){
+    //     $this->attributes['title'] = strip_tags($value);
+    // }
+
+    //$post->thumbnail_url (accessor)
     public function thumbnailUrl(): Attribute
     {
         return new Attribute(
@@ -132,11 +152,26 @@ class Post extends Model
             // get:fun()=>$this->cover_image ? Storage::disk('public')->url($this->cover_image):null)
         );
     }
+
+    //$post->publish_time (accessor)
     public function publishTime(): Attribute
     {
         return new Attribute(
             get: fn($value) => $this->published_at ?? $this->created_at,
 
         );
+    }
+    public function readTime(): Attribute
+    {
+        return (new Attribute(
+            get: fn() => \ceil($this->wordCount() / 200)
+        ))->shouldCache();
+    }
+
+
+
+    public function wordCount(): int
+    {
+        return \str_word_count($this->content);
     }
 }

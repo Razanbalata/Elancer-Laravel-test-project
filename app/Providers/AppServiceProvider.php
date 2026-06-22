@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Events\PostViewed;
 use App\Listeners\IncrementPostViews;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
@@ -32,6 +33,7 @@ class AppServiceProvider extends ServiceProvider
             Paginator::defaultView('pagination.custom-tailwind');
         }
 
+        JsonResource::withoutWrapping();
         // Event::listen(
         //     'posts.viewed',
         //         IncrementPostViews::class,

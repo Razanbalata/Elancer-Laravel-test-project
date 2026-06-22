@@ -3,15 +3,21 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Attributes\Hidden;
+use Illuminate\Support\Facades\Storage;
 use Override;
 
+//#[Fillable(['name','email','password'])]
+//#[Hidden(['password','two_factor_secret','two_factor_recovery_codes','two_factor_confirmed_at'])]
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
@@ -37,6 +43,9 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'two_factor_secret',
+        'two_factor_recovery_codes',
+        'two_factor_confirmed_at',
     ];
 
     /**
@@ -76,13 +85,21 @@ class User extends Authenticatable
         ;
     }
 
+    public function avatarUrl(): Attribute
+    {
+        return new Attribute(
+            get: fn() => $this->avatar ? Storage::disk('public')->url($this->avatarUrl) : asset('/images/avatars/user-01.jpg')
+        );
+    }
+
     // public function routeNotificationFor($notification = null)
     // {
     //     // to show which column return the type of email
     //     return $this->notification_email;
     // }
 
-    public function receivesBroadcastNotificationOn(){
+    public function receivesBroadcastNotificationOn()
+    {
         return 'App.Models.User.' . $this->id;
     }
 }

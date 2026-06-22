@@ -21,7 +21,7 @@ class AccessTokenController extends Controller
         ]);
 
         $user = User::query()->where('email', '=', $request->post('email'))->first();
-        if (!$user || Hash::check($request->post('password'), $user->password)) {
+        if (!$user || !Hash::check($request->post('password'), $user->password)) {
             return Response::json([
                 'status' => 'unauthenticated',
                 'message' => 'Invalid email or password',
@@ -36,7 +36,7 @@ class AccessTokenController extends Controller
 
         return Response::json([
             'token' => $token->plainTextToken,
-            'user' => $user,
+            'user' => $user->append(['avatar_url']), // on demand append
         ], 201);
     }
 

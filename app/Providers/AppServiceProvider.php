@@ -46,18 +46,22 @@ class AppServiceProvider extends ServiceProvider
 
         // ); // cause i initiate the event in the event class 
 
-        Gate::define('users.view', function ($user): bool {
-            return true;
-        });
 
-        Gate::define('users.create', function ($user): bool {
+        //(Gate filter) the logic in the before gate is run first and complete to define method if the before is false and if the before return nothing
+        Gate::before(function($user){
+          if($user->type == 'super-admin'){
             return true;
-        });
-        Gate::define('users.update', function ($user): bool {
-            return false;
-        });
-        Gate::define('users.delete', function ($user): bool {
-            return false;
-        });
+          }
+        });  
+        foreach (config('abilities') as $key => $value) {
+            Gate::define($key, function ($user) use ($key): bool {
+                foreach ($user->roles as $role) {
+                    if (in_array($key, $role->abilities)) {
+                        return true;
+                    }
+                }
+                return false;
+            });
+        }
     }
 }

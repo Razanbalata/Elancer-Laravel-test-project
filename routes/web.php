@@ -1,11 +1,13 @@
 <?php
 
+use App\Http\Controllers\AdminDashboard\UserController;
 use App\Http\Controllers\Dashboard\PostController as DashboardPostController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Dashboard\CategoryController as DashboardCategoryController;
 use App\Http\Controllers\Dashboard\NotificationController;
 use App\Http\Controllers\FollowController;
 use App\Http\Controllers\PostController;
+use App\Http\Middleware\EnsureUserType;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
 
@@ -76,3 +78,6 @@ Route::group([
 ], function () {
     Route::resource('categories', DashboardCategoryController::class);
 });
+
+Route::resource('admin/users',UserController::class)
+->middleware(['auth', 'type:super-admin,admin']);

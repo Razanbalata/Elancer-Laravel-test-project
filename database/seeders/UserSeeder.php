@@ -23,11 +23,21 @@ class UserSeeder extends Seeder
         //     'timezone'=>'Asia/Gaza' 
         // ]);
         DB::table('users')->insert([
-            'name' => "razana",
-            'email' => "ra2@gmail.com",
+            'name' => "admin",
+            'email' => "admin@gmail.com",
             'email_verified_at' => now(),
             'password' => Hash::make('password'),
-            'username'=>'roza',
+            'type'=>'admin',
+            'username'=>'admin',
+            'timezone'=>'Asia/Gaza' 
+        ]);
+        DB::table('users')->insert([
+            'name' => "Super admin",
+            'email' => "super@gmail.com",
+            'email_verified_at' => now(),
+            'password' => Hash::make('password'),
+            'type'=>'super-admin',
+            'username'=>'super',
             'timezone'=>'Asia/Gaza' 
         ]);
     }

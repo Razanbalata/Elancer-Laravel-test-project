@@ -11,7 +11,7 @@ use App\Http\Middleware\EnsureUserType;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', HomeController::class)->name('home');
+// Route::get('/', HomeController::class)->name('home');
 // Route::get("/posts/{id}/{slug}",[PostController::class,"show"])
 //  ->where([
 //     "slug"=>"[a-z0-9\-]+"
@@ -47,56 +47,152 @@ Route::get('/', HomeController::class)->name('home');
 //     "destroy"=>"dashboard.posts.destroy"
 //  ]);
 
-Route::group([
-    'as'=>'dashboard.',
-    'prefix'=>'dashboard/'
-], function () {
-    Route::put('posts/{post}/restore', [DashboardPostController::class, 'restore'])->name('posts.restore');
-    Route::delete('posts/{post}/force', [DashboardPostController::class, 'forceDelete'])->name('posts.forceDelete');
-     
-    Route::resource('posts', DashboardPostController::class);
+// Route::group([
+//     'as'=>'dashboard.',
+//     'prefix'=>'dashboard/'
+// ], function () {
+//     Route::put('posts/{post}/restore', [DashboardPostController::class, 'restore'])->name('posts.restore');
+//     Route::delete('posts/{post}/force', [DashboardPostController::class, 'forceDelete'])->name('posts.forceDelete');
 
-    Route::group([
-        'as'=>'notifications.',
-    'prefix'=>'notifications/',
-    'controller'=>NotificationController::class
-    ],function(){
-        Route::get('/','index')->name('index');
-        Route::patch('/{id}/read','read')->name('read'); // make it get to test the route if it is running but the right way is patch
-        Route::patch('/{id}/unread','unread')->name('unread');
-        Route::delete('/{id}/delete','destroy')->name('delete');
-    });
+//     Route::resource('posts', DashboardPostController::class);
+
+//     Route::group([
+//         'as'=>'notifications.',
+//     'prefix'=>'notifications/',
+//     'controller'=>NotificationController::class
+//     ],function(){
+//         Route::get('/','index')->name('index');
+//         Route::patch('/{id}/read','read')->name('read'); // make it get to test the route if it is running but the right way is patch
+//         Route::patch('/{id}/unread','unread')->name('unread');
+//         Route::delete('/{id}/delete','destroy')->name('delete');
+//     });
+// });
+// Route::get('/posts/{slug}', [PostController::class, 'show'])->name('posts.show');
+// Route::get('/u/{username}',function(){})->name('users.profile');
+// Route::post('user/{id}/follow',[FollowController::class,'store'])->name('users.follow')->middleware('auth:web');
+// Route::delete('users/{id}/unfollow',[FollowController::class,'destroy'])->name('users.unfollow')->middleware('auth:web');
+// Route::group([
+//     'as'=>'dashboard.',
+//     'prefix'=>'dashboard/',
+//     'middleware'=>['auth', 'active']
+// ], function () {
+//     Route::resource('categories', DashboardCategoryController::class);
+// });
+
+// Route::resource('admin/users',UserController::class)
+// ->middleware(['auth','active','type:super-admin,admin']);
+
+// Route::get('/account-inactive', function () {
+//     return view('account-inactive');
+// })->name('account.inactive');
+
+
+// Route::middleware(['auth', 'active'])
+//     ->prefix('dashboard')
+//     ->name('dashboard.')
+//     ->group(function () {
+
+//         Route::resource('categories', DashboardCategoryController::class);
+
+//         Route::resource('posts', DashboardPostController::class);
+
+//         Route::get('/', function () {
+//             return view('home');
+//         })->name('home');
+// });
+
+
+
+/*
+|--------------------------------------------------------------------------
+| Home
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/', HomeController::class)->name('home');
+
+
+/*
+|--------------------------------------------------------------------------
+| Public Posts
+|--------------------------------------------------------------------------
+*/
+Route::get('/posts/{slug}', [PostController::class, 'show'])
+    ->name('posts.show');
+
+Route::get('/u/{username}', function () {
+    // profile page
+})->name('users.profile');
+
+
+/*
+|--------------------------------------------------------------------------
+| Follow System (Web only)
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth:web'])->group(function () {
+
+    Route::post('user/{id}/follow', [FollowController::class, 'store'])
+        ->name('users.follow');
+
+    Route::delete('users/{id}/unfollow', [FollowController::class, 'destroy'])
+        ->name('users.unfollow');
 });
-Route::get('/posts/{slug}', [PostController::class, 'show'])->name('posts.show');
-Route::get('/u/{username}',function(){})->name('users.profile');
-Route::post('user/{id}/follow',[FollowController::class,'store'])->name('users.follow')->middleware('auth:web');
-Route::delete('users/{id}/unfollow',[FollowController::class,'destroy'])->name('users.unfollow')->middleware('auth:web');
-Route::group([
-    'as'=>'dashboard.',
-    'prefix'=>'dashboard/',
-    'middleware'=>['auth', 'active']
-], function () {
-    Route::resource('categories', DashboardCategoryController::class);
-});
-
-Route::resource('admin/users',UserController::class)
-->middleware(['auth', 'active', 'type:super-admin,admin']);
-
-Route::get('/account-inactive', function () {
-    return view('account-inactive');
-})->name('account.inactive');
 
 
+/*
+|--------------------------------------------------------------------------
+| Dashboard (User Panel)
+| auth + active users only
+|--------------------------------------------------------------------------
+*/
 Route::middleware(['auth', 'active'])
     ->prefix('dashboard')
     ->name('dashboard.')
     ->group(function () {
 
+        Route::get('/', function () {
+            return view('dashboard.home');
+        })->name('home');
+
         Route::resource('categories', DashboardCategoryController::class);
 
         Route::resource('posts', DashboardPostController::class);
 
-        Route::get('/', function () {
-            return view('home');
-        })->name('home');
-});
+        /*
+        | Notifications
+        */
+        Route::prefix('notifications')
+            ->name('notifications.')
+            ->controller(NotificationController::class)
+            ->group(function () {
+
+                Route::get('/', 'index')->name('index');
+
+                Route::patch('{id}/read', 'read')->name('read');
+
+                Route::patch('{id}/unread', 'unread')->name('unread');
+
+                Route::delete('{id}/delete', 'destroy')->name('delete');
+            });
+    });
+
+
+/*
+|--------------------------------------------------------------------------
+| Admin Panel (Users Management)
+| Only super-admin or admin
+|--------------------------------------------------------------------------
+*/
+Route::resource('admin/users', UserController::class)
+    ->middleware(['auth', 'active', 'type:super-admin,admin']);
+
+
+/*
+|--------------------------------------------------------------------------
+| Account Inactive Page
+|--------------------------------------------------------------------------
+*/
+Route::get('/account-inactive', function () {
+    return view('account-inactive');
+})->name('account.inactive');

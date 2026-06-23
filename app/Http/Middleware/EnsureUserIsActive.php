@@ -17,15 +17,18 @@ class EnsureUserIsActive
     public function handle(Request $request, Closure $next): Response
     {
         $user = $request->user();
-        // Web request
-        if (!$request->expectsJson()) {
+
+        if ($user && $user->status !== 'active') {
+
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'message' => 'Account inactive'
+                ], 403);
+            }
+
             return redirect()->route('account.inactive');
         }
 
-        // API request
-        return response()->json([
-            'message' => 'Account inactive'
-        ], 403);
         return $next($request);
     }
 }

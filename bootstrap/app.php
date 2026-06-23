@@ -24,9 +24,7 @@ return Application::configure(basePath: dirname(__DIR__))
             UpdateUserLastActivityTime::class,
         ]);
         $middleware->alias([
-            'type' => EnsureUserType::class
-        ]);
-        $middleware->alias([
+            'type' => EnsureUserType::class,
             'active' => EnsureUserIsActive::class,
         ]);
     })

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PostRequest;
+use App\Http\Resources\PostJsonApiResource;
 use App\Http\Resources\PostResource;
 use App\Models\Post;
 use App\Services\PostService;
@@ -74,7 +75,7 @@ class PostController extends Controller implements HasMiddleware
         // with() use for qery builder but load use with the obj itself
         // Accept : application/json (requset header to show what data i need to recieve)
          $post->load(['category:id,name', 'user:id,name,username']);
-         return $post->toResource();
+         return $post->toResource(PostJsonApiResource::class);
          }
 
     /**

@@ -62,7 +62,8 @@ class User extends Authenticatable
     }
 
 
-    public function roles():BelongsToMany{
+    public function roles(): BelongsToMany
+    {
         return $this->belongsToMany(Role::class);
     }
 
@@ -106,5 +107,15 @@ class User extends Authenticatable
     public function receivesBroadcastNotificationOn()
     {
         return 'App.Models.User.' . $this->id;
+    }
+
+    public function hasAbility(string $ability):bool
+    {
+        foreach ($this->roles as $role) {
+            if (in_array($ability, $role->abilities)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

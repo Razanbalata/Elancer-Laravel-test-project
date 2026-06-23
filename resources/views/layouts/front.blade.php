@@ -16,7 +16,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
         rel="stylesheet" />
-        @vite(['resources/css/app.css','resources/js/app.js'])
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -137,7 +137,7 @@
     </script>
     <script>
         const USER_ID = "{{ auth()->id() }}"
-   </script>
+    </script>
     {{ $style ?? '' }}
     {{ $headScripts ?? '' }}
 </head>
@@ -154,8 +154,10 @@
                     @section('nav')
                         <a class="text-primary font-bold border-b-2 border-primary pb-1 font-ui-label text-ui-label hover:text-primary transition-colors duration-200"
                             href="#">Feed</a>
-                        <a class="text-on-surface-variant font-medium font-ui-label text-ui-label hover:text-primary transition-colors duration-200"
-                            href="#">Authors</a>
+                        @can('view-any', App\Models\User::class)
+                            <a class="text-on-surface-variant font-medium font-ui-label text-ui-label hover:text-primary transition-colors duration-200"
+                                href="#">Authors</a>
+                        @endcan
                         <a class="text-on-surface-variant font-medium font-ui-label text-ui-label hover:text-primary transition-colors duration-200"
                             href="#">Dashboard</a>
                     @show

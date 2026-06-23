@@ -74,10 +74,29 @@ Route::delete('users/{id}/unfollow',[FollowController::class,'destroy'])->name('
 Route::group([
     'as'=>'dashboard.',
     'prefix'=>'dashboard/',
-    'middleware'=>'auth'
+    'middleware'=>['auth', 'active']
 ], function () {
     Route::resource('categories', DashboardCategoryController::class);
 });
 
 Route::resource('admin/users',UserController::class)
-->middleware(['auth', 'type:super-admin,admin']);
+->middleware(['auth', 'active', 'type:super-admin,admin']);
+
+Route::get('/account-inactive', function () {
+    return view('account-inactive');
+})->name('account.inactive');
+
+
+Route::middleware(['auth', 'active'])
+    ->prefix('dashboard')
+    ->name('dashboard.')
+    ->group(function () {
+
+        Route::resource('categories', DashboardCategoryController::class);
+
+        Route::resource('posts', DashboardPostController::class);
+
+        Route::get('/', function () {
+            return view('home');
+        })->name('home');
+});

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\EnsureUserType;
+use App\Http\Middleware\UpdateUserLastActivityTime;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -15,7 +16,12 @@ return Application::configure(basePath: dirname(__DIR__))
         apiPrefix:'app/api/', // for routes
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->web([
+            UpdateUserLastActivityTime::class,
+        ]);
+        $middleware->api([
+            UpdateUserLastActivityTime::class,
+        ]);
         $middleware->alias([
         'type'=>EnsureUserType::class
     ]);

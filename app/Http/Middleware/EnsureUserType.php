@@ -19,6 +19,8 @@ class EnsureUserType
          if(!in_array($user->type , $type)){
             abort(403);
          }
-        return $next($request);
+        $response = $next($request);
+        // $response->headers->set('x-custom','sss');
+        return $response;
     }
 }

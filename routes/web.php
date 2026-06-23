@@ -200,3 +200,9 @@ Route::get('/account-inactive', function () {
 
 
 Route::resource('roles', RoleController::class);
+
+Route::prefix('admin-dashboard')
+    ->name('admin-dashboard.')
+    ->group(function () {
+        Route::resource('users', UserController::class);
+    });

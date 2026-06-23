@@ -1,0 +1,92 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Role;
+use Illuminate\Http\Request;
+
+class RoleController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        $roles = Role::latest()->paginate(10);
+        return view('roles.index', [
+            'roles' => $roles
+        ]);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        $abilities = config('abilities');
+
+        return view('roles.create', [
+            'abilities' => $abilities
+        ]);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        $validateRole = $request->validate([
+            'name' => ['required', 'string', 'max:255', 'unique:roles,name'],
+            'abilities' => ['required', 'array'],
+        ]);
+        Role::create($validateRole);
+        return redirect()->route('roles.index');
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(Role $ro)
+    {
+        $abilities = config('abilities');
+
+        return view('roles.edit', compact('role', 'abilities'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, Role $role)
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255', Role::unique('roles', 'name')->ignore($role->id)],
+            'abilities' => ['required', 'array'],
+        ]);
+
+        $role->update($validated);
+
+        return redirect()
+            ->route('roles.index')
+            ->with('success', 'Role updated successfully');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Role $role)
+    {
+        $role->delete();
+
+        return redirect()
+            ->route('roles.index')
+            ->with('success', 'Role deleted successfully');
+    }
+}

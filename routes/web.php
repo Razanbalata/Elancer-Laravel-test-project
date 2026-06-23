@@ -7,6 +7,7 @@ use App\Http\Controllers\Dashboard\CategoryController as DashboardCategoryContro
 use App\Http\Controllers\Dashboard\NotificationController;
 use App\Http\Controllers\FollowController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\RoleController;
 use App\Http\Middleware\EnsureUserType;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
@@ -196,3 +197,6 @@ Route::resource('admin/users', UserController::class)
 Route::get('/account-inactive', function () {
     return view('account-inactive');
 })->name('account.inactive');
+
+
+Route::resource('roles', RoleController::class);

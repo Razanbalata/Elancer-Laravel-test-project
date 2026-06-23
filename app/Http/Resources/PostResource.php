@@ -23,7 +23,10 @@ class PostResource extends JsonResource
                 'name' => $this->status->value,
                 'label' => $this->status->getLabel(),
                 'color' => $this->status->getColor()
-            ]
+            ],
+            'published_at' => $this->when($this->published_at, $this->published_at),
+            'category' => new CategoryResource($this->whenLoaded('category')),
+            'author' => new UserResource($this->whenLoaded('user'))
         ];
     }
 }

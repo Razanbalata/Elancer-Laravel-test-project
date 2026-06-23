@@ -31,9 +31,9 @@ class PostController extends Controller implements HasMiddleware
     public function index()
     {
         $posts = Post::published()
-            ->with(['category:id,name', 'user:id,name,username'])
+            ->with(['category:id,name', 'user:id,name,username,avatar'])
             ->paginate();
-         return PostResource::collection($posts);
+         return $posts->toResourceCollection();
     }
 
     /**
@@ -74,7 +74,7 @@ class PostController extends Controller implements HasMiddleware
         // with() use for qery builder but load use with the obj itself
         // Accept : application/json (requset header to show what data i need to recieve)
          $post->load(['category:id,name', 'user:id,name,username']);
-         return new PostResource($post);
+         return $post->toResource();
          }
 
     /**

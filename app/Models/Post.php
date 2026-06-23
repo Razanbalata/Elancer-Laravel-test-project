@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\PostStatus;
+use App\Http\Resources\PostResource;
 use App\Models\Scopes\OwnerScope;
 use App\Observers\PostObserver;
 use Illuminate\Database\Eloquent\Builder;
@@ -15,10 +16,12 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\Attributes\UseResource;
 
 // #[Appends(['read_time'])]
 // #[ScopeBy(OwnerScope::class)]  // the name of scope is the global scope name itself (OwnerScope)
 // #[ObservedBy(PostObserver::class)]
+#[UseResource(PostResource::class)]
 class Post extends Model
 {
 

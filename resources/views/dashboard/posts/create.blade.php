@@ -97,7 +97,7 @@
                             <div>
                                 <label for='' class='flex flex-col gap-4 mb-6'> keywords </label>
                                 <input type='text' name='meta[keywords]'
-                                    value='{{ old('meta.keywords', $post->meta['keywords'] ?? '') }}' />
+                                    value="{{ old('meta.keywords', $post->meta['keywords'] ?? '') }}" />
 
                             </div>
                             {{-- <div>

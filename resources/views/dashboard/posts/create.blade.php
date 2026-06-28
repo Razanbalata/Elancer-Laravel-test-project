@@ -69,6 +69,7 @@
                         leaving only the words. We prioritize clarity above all else, ensuring that every sentence
                         has room to breathe and every idea has the weight it deserves.</p>
                 </div> --}}
+                    <button type='button' id='ai' class='rounded-2xl border-2 p-3'>Write with ai</button>
                     <textarea id='content' name="content"
                         class="w-full bg-transparent border-none focus:outline-none font-body-lg text-body-lg text-on-surface leading-relaxed placeholder:text-surface-variant"
                         data-placeholder="Try our story" oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"'>
@@ -218,45 +219,67 @@
 </x-layout>
 
 <script>
-    tinymce.init({
-        selector: '#content',
-        plugins: [
-            // Core editing features
-            'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'link', 'lists', 'media',
-            'searchreplace', 'table', 'visualblocks', 'wordcount',
-            // Your account includes a free trial of TinyMCE premium features
-            // Try the most popular premium features until Jun 16, 2026:
-            'checklist', 'mediaembed', 'casechange', 'formatpainter', 'pageembed', 'a11ychecker',
-            'tinymcespellchecker', 'permanentpen', 'powerpaste', 'advtable', 'advcode', 'advtemplate',
-            'tinymceai', 'uploadcare', 'mentions', 'tinycomments', 'tableofcontents', 'footnotes',
-            'mergetags', 'autocorrect', 'typography', 'inlinecss', 'markdown', 'importword', 'exportword',
-            'exportpdf'
-        ],
-        toolbar: 'undo redo | tinymceai-chat tinymceai-quickactions tinymceai-review | blocks fontfamily fontsize | bold italic underline strikethrough | link media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography uploadcare | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
-        tinycomments_mode: 'embedded',
-        tinycomments_author: 'Author name',
-        mergetags_list: [{
-                value: 'First.Name',
-                title: 'First Name'
-            },
-            {
-                value: 'Email',
-                title: 'Email'
-            },
-        ],
-        tinymceai_token_provider: async () => {
-            await fetch(
-                `https://demo.api.tiny.cloud/1/t86t6sht82g1dun4bumz83x5roc04rtjo43qbkgbtl0walzz/auth/random`, {
-                    method: "POST",
-                    credentials: "include"
-                });
-            return {
-                token: await fetch(
-                    `https://demo.api.tiny.cloud/1/t86t6sht82g1dun4bumz83x5roc04rtjo43qbkgbtl0walzz/jwt/tinymceai`, {
-                        credentials: "include"
-                    }).then(r => r.text())
+    const btn = document.getElementById('ai')
+    btn.addEventListener('click', function name(event) {
+        event.preventDefault();
+        let message = window.prompt('Describe your post idea:');
+        if (message) {
+            const evtSource = new EventSource("{{ route('dashboard.posts.ai') }}?message=" + message);
+            evtSource.onmessage = function(event) {
+                try {
+                    let data = JSON.parse(event.data);
+                    console.log(data?.delta);
+                    content.value = content.value + (data?.delta || '');
+                } catch (e) {
+                    console.error("JSON parse error", e);
+                }
             };
-        },
-        uploadcare_public_key: 'cb0ef7d2cbbe287d8f70',
-    });
+            evtSource.onerror = function(event) {
+                console.error("EventSource failed.");
+                evtSource.close();
+            };
+        }
+    })
+
+    // tinymce.init({
+    //     selector: '#content',
+    //     plugins: [
+    //         // Core editing features
+    //         'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'link', 'lists', 'media',
+    //         'searchreplace', 'table', 'visualblocks', 'wordcount',
+    //         // Your account includes a free trial of TinyMCE premium features
+    //         // Try the most popular premium features until Jun 16, 2026:
+    //         'checklist', 'mediaembed', 'casechange', 'formatpainter', 'pageembed', 'a11ychecker',
+    //         'tinymcespellchecker', 'permanentpen', 'powerpaste', 'advtable', 'advcode', 'advtemplate',
+    //         'tinymceai', 'uploadcare', 'mentions', 'tinycomments', 'tableofcontents', 'footnotes',
+    //         'mergetags', 'autocorrect', 'typography', 'inlinecss', 'markdown', 'importword', 'exportword',
+    //         'exportpdf'
+    //     ],
+    //     toolbar: 'undo redo | tinymceai-chat tinymceai-quickactions tinymceai-review | blocks fontfamily fontsize | bold italic underline strikethrough | link media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography uploadcare | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+    //     tinycomments_mode: 'embedded',
+    //     tinycomments_author: 'Author name',
+    //     mergetags_list: [{
+    //             value: 'First.Name',
+    //             title: 'First Name'
+    //         },
+    //         {
+    //             value: 'Email',
+    //             title: 'Email'
+    //         },
+    //     ],
+    //     tinymceai_token_provider: async () => {
+    //         await fetch(
+    //             `https://demo.api.tiny.cloud/1/t86t6sht82g1dun4bumz83x5roc04rtjo43qbkgbtl0walzz/auth/random`, {
+    //                 method: "POST",
+    //                 credentials: "include"
+    //             });
+    //         return {
+    //             token: await fetch(
+    //                 `https://demo.api.tiny.cloud/1/t86t6sht82g1dun4bumz83x5roc04rtjo43qbkgbtl0walzz/jwt/tinymceai`, {
+    //                     credentials: "include"
+    //                 }).then(r => r.text())
+    //         };
+    //     },
+    //     uploadcare_public_key: 'cb0ef7d2cbbe287d8f70',
+    // });
 </script>

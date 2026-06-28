@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminDashboard\UserController;
+use App\Http\Controllers\Dashboard\AiWriteController;
 use App\Http\Controllers\Dashboard\PostController as DashboardPostController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Dashboard\CategoryController as DashboardCategoryController;
@@ -155,6 +156,9 @@ Route::middleware(['auth', 'active'])
         Route::get('/', function () {
             return view('dashboard.home');
         })->name('home');
+
+
+        Route::get('posts/ai',AiWriteController::class)->name('posts.ai');
 
         Route::resource('categories', DashboardCategoryController::class);
 

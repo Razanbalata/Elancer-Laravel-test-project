@@ -6,6 +6,7 @@ use App\Http\Controllers\Dashboard\PostController as DashboardPostController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Dashboard\CategoryController as DashboardCategoryController;
 use App\Http\Controllers\Dashboard\NotificationController;
+use App\Http\Controllers\BookmarkController;
 use App\Http\Controllers\FollowController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\RoleController;
@@ -139,6 +140,12 @@ Route::middleware(['auth:web'])->group(function () {
 
     Route::delete('users/{id}/unfollow', [FollowController::class, 'destroy'])
         ->name('users.unfollow');
+
+    Route::post('posts/{id}/bookmark', [BookmarkController::class, 'store'])
+        ->name('posts.bookmark');
+
+    Route::delete('posts/{id}/bookmark', [BookmarkController::class, 'destroy'])
+        ->name('posts.unbookmark');
 });
 
 

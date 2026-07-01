@@ -92,6 +92,12 @@ class User extends Authenticatable
         ;
     }
 
+    public function bookmarkedPosts(): BelongsToMany
+    {
+        return $this->belongsToMany(Post::class, 'bookmarks', 'user_id', 'post_id')
+            ->withTimestamps();
+    }
+
     public function avatarUrl(): Attribute
     {
         return new Attribute(

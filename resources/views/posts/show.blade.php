@@ -55,8 +55,7 @@
                 <span class="font-ui-label text-ui-label text-secondary group-hover:text-primary">84</span>
             </div>
             <div class="w-px h-6 bg-outline-variant"></div>
-            <button
-                class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">bookmark</button>
+            <x-post-bookmark :post="$post" />
             <button
                 class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">ios_share</button>
         </div>

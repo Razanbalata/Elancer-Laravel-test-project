@@ -171,6 +171,7 @@
                         placeholder="Search..." type="text" />
                 </div>
                 <div class="flex items-center gap-2">
+                    @auth
                     <div class="relative inline-block text-left" id="notification-dropdown-wrapper">
 
                         <div class="relative inline-block text-left" id="notification-dropdown-wrapper">
@@ -237,6 +238,7 @@
                         class="p-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-all">
                         <span class="material-symbols-outlined" data-icon="bookmark">bookmark</span>
                     </button>
+                    @endauth
                     <x-user-menu />
                 </div>
             </div>

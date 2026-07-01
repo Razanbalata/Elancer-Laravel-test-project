@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
@@ -127,6 +128,25 @@ class Post extends Model
     public function tags()
     {
         return $this->belongsToMany(Tag::class, 'post_tag', 'post_id', 'tag_id');
+    }
+
+    public function bookmarkedBy(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'bookmarks', 'post_id', 'user_id')
+            ->withTimestamps();
+    }
+
+    public function scopeWithBookmarkStatus(Builder $builder, ?int $userId = null): Builder
+    {
+        $userId ??= Auth::id();
+
+        if (!$userId) {
+            return $builder;
+        }
+
+        return $builder->withExists([
+            'bookmarkedBy' => fn($query) => $query->where('user_id', $userId),
+        ]);
     }
     public function content(): Attribute // mutator
     {

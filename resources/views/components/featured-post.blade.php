@@ -10,14 +10,18 @@
 
     <div class="p-8 space-y-4">
 
-        <div class="flex items-center gap-3 font-metadata text-metadata text-secondary">
-            <span class="bg-primary-container text-on-primary px-2 py-0.5 rounded font-bold uppercase tracking-wider">
-                Featured
-            </span>
+        <div class="flex items-center justify-between gap-3 font-metadata text-metadata text-secondary">
+            <div class="flex items-center gap-3">
+                <span class="bg-primary-container text-on-primary px-2 py-0.5 rounded font-bold uppercase tracking-wider">
+                    Featured
+                </span>
 
-            <span>•</span>
+                <span>•</span>
 
-            <span>{{ $post->publish_time->format('M d, Y') }}</span>
+                <span>{{ $post->publish_time->format('M d, Y') }}</span>
+            </div>
+
+            <x-post-bookmark :post="$post" />
         </div>
 
         <h2

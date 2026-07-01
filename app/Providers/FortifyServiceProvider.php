@@ -38,6 +38,14 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::updateUserPasswordsUsing(UpdateUserPassword::class);
         Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
         Fortify::redirectUserForTwoFactorAuthenticationUsing(RedirectIfTwoFactorAuthenticatable::class);
+        
+        // Customize the redirect after login
+        Fortify::redirects('login', function () {
+            if (auth()->user()->hasRole('admin') || auth()->user()->hasRole('super-admin')) {
+                return route('admin-dashboard.users.index');
+            }
+            return route('dashboard.home');
+        });
 
         RateLimiter::for('login', function (Request $request) {
             $throttleKey = Str::transliterate(Str::lower($request->input(Fortify::username())).'|'.$request->ip());

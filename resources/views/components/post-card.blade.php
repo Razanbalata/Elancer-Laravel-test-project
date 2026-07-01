@@ -9,17 +9,21 @@
 
     <div class="w-full md:w-2/3 space-y-3">
 
-        <div class="flex items-center gap-2 font-metadata text-metadata text-secondary">
+        <div class="flex items-center justify-between gap-2 font-metadata text-metadata text-secondary">
 
-            <span class="text-primary font-bold">
-                {{ $post->category->name }}
-            </span>
+            <div class="flex items-center gap-2">
+                <span class="text-primary font-bold">
+                    {{ $post->category->name }}
+                </span>
 
-            <span>•</span>
+                <span>•</span>
 
-            <span>
-                {{ $post->publish_time->format('M d, Y') }}
-            </span>
+                <span>
+                    {{ $post->publish_time->format('M d, Y') }}
+                </span>
+            </div>
+
+            <x-post-bookmark :post="$post" />
 
         </div>
 

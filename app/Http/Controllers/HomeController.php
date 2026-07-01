@@ -15,7 +15,8 @@ class HomeController extends Controller
         $tags = Tag::all();
         $query = Post::query()
             ->published()
-            ->with(['user', 'category']);
+            ->with(['user', 'category'])
+            ->withBookmarkStatus();
 
 
         // Ctegory Filter  

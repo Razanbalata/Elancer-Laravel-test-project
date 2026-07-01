@@ -33,6 +33,7 @@ class PostController extends Controller
         $post = Post::query()
             ->published()
             ->slug($slug)
+            ->withBookmarkStatus()
             ->firstOrFail();
         
        // event('posts.viewed',$post);    

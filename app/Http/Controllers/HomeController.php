@@ -35,10 +35,8 @@ class HomeController extends Controller
         // Discover Filter
         if ($request->discover === 'popular') {
             $query->orderByDesc('views');
-        } elseif ($request->discover === 'recent') {
-            $query->latest();
         } else {
-            $query->latest(); // Explore / Default
+            $query->latest(); // Explore
         }
 
         $featuredPost = (clone $query)->first();
@@ -48,19 +46,11 @@ class HomeController extends Controller
             ->paginate(3)
             ->withQueryString();
 
-        $trendingPosts = Post::query()
-            ->published()
-            ->with(['category'])
-            ->orderByDesc('views')
-            ->take(3)
-            ->get();
-
         return view('home', [
             'featuredPost' => $featuredPost,
             'posts' => $posts,
             'tags' => $tags,
-            'categories' => $categories,
-            'trendingPosts' => $trendingPosts,
+            'categories' => $categories
         ]);
     }
 }

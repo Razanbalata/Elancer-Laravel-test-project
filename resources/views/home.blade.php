@@ -138,7 +138,7 @@
     <!-- Right Sidebar: Trending & Who to Follow -->
     <aside class="hidden lg:block lg:col-span-3 space-y-12">
         <!-- Trending Section -->
-        @include('asides.trending', ['trendingPosts' => $trendingPosts])
+        @include('asides.trending', ['test' => 'Test'])
         <!-- Who to Follow -->
         <x-recommended-authors title="Follow Authors" count="2" />
         <!-- Newsletter Sign Up -->
